@@ -1,0 +1,172 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --breakpoint-xs: 480px;
+  --color-brand-orange: #EC6426;
+  --color-brand-orange-light: #FF7A3D;
+  --color-brand-cream: #FDFBF7;
+  --color-brand-cream-warm: #FFF8F0;
+  --color-brand-dark: #1A1A1A;
+  --color-brand-text: #1A1A1A;
+  --color-brand-gold: #D4A853;
+  --color-brand-gold-light: #E8C97A;
+  --color-brand-stone: #F0E6D4;
+  --color-brand-peach: #F5E6D0;
+  --color-brand-navy: #071229;
+  --color-brand-blue: #0D1B3E;
+  --color-brand-blue-mid: #1A3060;
+  --color-brand-marble: #F0EBE3;
+  --color-brand-marble-dark: #D8CFC6;
+  --color-brand-text-light: #FDFAF6;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+  background-color: var(--color-brand-cream);
+  color: var(--color-brand-text);
+  overflow-x: clip;
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: var(--font-space), sans-serif;
+}
+
+/* Brutalist Shadows */
+.shadow-brutal {
+  box-shadow: 4px 4px 0px 0px var(--color-brand-dark);
+}
+.shadow-brutal-lg {
+  box-shadow: 8px 8px 0px 0px var(--color-brand-dark);
+}
+.shadow-brutal-hover:hover {
+  box-shadow: 2px 2px 0px 0px var(--color-brand-dark);
+  transform: translate(2px, 2px);
+}
+.shadow-brutal-lg-hover:hover {
+  box-shadow: 4px 4px 0px 0px var(--color-brand-dark);
+  transform: translate(4px, 4px);
+}
+
+/* Manga Halftone Pattern */
+.bg-halftone {
+  background-image: radial-gradient(var(--color-brand-dark) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+.bg-halftone-orange {
+  background-image: radial-gradient(var(--color-brand-orange) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.animate-shine {
+  animation: shine 3s infinite;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Greek Mythology DA */
+.text-shadow-brutal {
+  text-shadow: 0 4px 0 rgba(26, 26, 26, 0.15);
+}
+
+.text-shadow-brutal-dark {
+  text-shadow: 0 4px 0 rgba(26, 26, 26, 0.25);
+}
+
+.bg-greek-gradient {
+  background: linear-gradient(180deg, var(--color-brand-cream-warm) 0%, var(--color-brand-peach) 50%, var(--color-brand-stone) 100%);
+}
+
+.bg-cta-gradient {
+  background: linear-gradient(135deg, var(--color-brand-orange) 0%, var(--color-brand-orange-light) 100%);
+}
+
+.bg-olympus-gradient {
+  background: linear-gradient(180deg, #071229 0%, #0D1B3E 35%, #1A3060 60%, #0D1B3E 85%, #071229 100%);
+}
+
+.bg-marble-shaft {
+  background: linear-gradient(90deg, #B8AEA0 0%, #DDD8D0 18%, #F4F0EC 42%, #FAF8F5 52%, #F4F0EC 62%, #DDD8D0 82%, #B8AEA0 100%);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(236, 100, 38, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(236, 100, 38, 0.5); }
+}
+
+.animate-glow {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Parchemin / stèle (cartes premium) */
+.stele-card {
+  position: relative;
+}
+.stele-card::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 2px dashed rgba(26, 26, 26, 0.12);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.55s ease-out both;
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(236, 100, 38, 0.4); }
+  50%       { box-shadow: 0 0 0 6px rgba(236, 100, 38, 0); }
+}
+
+.animate-pulse-border {
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-glow,
+  .animate-shine,
+  .animate-marquee,
+  .animate-fadeInUp,
+  .animate-pulse-border {
+    animation: none !important;
+  }
+}
