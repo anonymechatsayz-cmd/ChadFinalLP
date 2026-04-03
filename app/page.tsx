@@ -6,7 +6,6 @@ import { Creator } from '@/components/sections/Creator';
 import { ParentsMessage } from '@/components/sections/ParentsMessage';
 import { PricingSection, FAQSection } from '@/components/sections/PricingFAQ';
 import { SiteFooter, StickyMobileCTA } from '@/components/sections/CTA';
-import { CTANavy } from '@/components/sections/CTANavy';
 import { SectionParchmentDivider } from '@/components/SectionParchmentDivider';
 import { MidPageCta } from '@/components/MidPageCta';
 
@@ -30,7 +29,6 @@ export default function LandingPage() {
       {/* cream → Pricing : aura son propre border */}
       <SectionParchmentDivider variant="cream" />
       <PricingSection />
-      <CTANavy />
       <FAQSection />
       <SiteFooter />
       <StickyMobileCTA />

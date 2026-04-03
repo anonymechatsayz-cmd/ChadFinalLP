@@ -46,19 +46,50 @@ const PROGRAMME = [
 ];
 
 // ─── FAQ ────────────────────────────────────────────────────────────────────
-function FAQItem({ faq }: { faq: any }) {
+// Alternating warm (orange/peach) and cool (sky blue) — matching DA palette
+const FAQ_VARIANTS = [
+  {
+    bg: '#fde8d6',
+    border: '#e8956a',
+    shadow: '#c4704a',
+    divider: 'rgba(232,149,106,0.35)',
+  },
+  {
+    bg: '#d4e8f5',
+    border: '#7ab4d0',
+    shadow: '#4a8aaa',
+    divider: 'rgba(122,180,208,0.35)',
+  },
+];
+
+function FAQItem({ faq, index }: { faq: any; index: number }) {
   const [open, setOpen] = useState(false);
+  const v = FAQ_VARIANTS[index % 2];
   return (
-    <div style={{ background:'linear-gradient(160deg,#ede5da 0%,#d8ccbc 40%,#e8ddd0 70%,#cfc3b4 100%)', border:'2px solid #8a7968', borderRadius:10, boxShadow: open ? '4px 4px 0 #5a4e3e' : '3px 3px 0 #5a4e3e', overflow:'hidden' }}>
+    <div style={{
+      background: v.bg,
+      border: `2px solid ${v.border}`,
+      borderRadius: 10,
+      boxShadow: open ? `4px 4px 0 ${v.shadow}` : `3px 3px 0 ${v.shadow}`,
+      overflow: 'hidden',
+      transition: 'box-shadow 0.2s ease',
+    }}>
       <button onClick={() => setOpen(!open)} className="w-full text-left flex justify-between items-center outline-none" style={{ padding:'clamp(14px,1.5vw,18px) clamp(16px,2vw,22px)', gap:16 }}>
-        <span style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#2a1e12', letterSpacing:'.02em' }}>{faq.q}</span>
-        <motion.span animate={{ rotate: open ? 45 : 0 }} style={{ color:'#d4a017', fontSize:22, fontFamily:'var(--font-cinzel)', flexShrink:0 }}>+</motion.span>
+        <span style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#1a2d4a', letterSpacing:'.02em' }}>{faq.q}</span>
+        <motion.div
+          animate={{ rotate: open ? 45 : 0 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          className="flex items-center justify-center shrink-0"
+          style={{ width: 32, height: 32, borderRadius: '50%', background: '#d4a017', flexShrink: 0 }}
+        >
+          <span style={{ color: '#fff', fontSize: 20, fontFamily: 'var(--font-cinzel)', lineHeight: 1, display: 'block', marginTop: -1 }}>+</span>
+        </motion.div>
       </button>
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ height:0, opacity:0 }} animate={{ height:'auto', opacity:1 }} exit={{ height:0, opacity:0 }} className="overflow-hidden">
-            <div style={{ padding:'0 clamp(16px,2vw,22px) clamp(14px,1.5vw,18px)', borderTop:'1px solid rgba(138,121,104,0.4)' }}>
-              <p style={{ fontFamily:'var(--font-space)', fontSize:'clamp(13px,1vw,15px)', color:'rgba(42,30,18,0.68)', lineHeight:1.65, fontWeight:500, marginTop:12 }}>{faq.a}</p>
+          <motion.div initial={{ height:0, opacity:0 }} animate={{ height:'auto', opacity:1 }} exit={{ height:0, opacity:0 }} transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden">
+            <div style={{ padding:`0 clamp(16px,2vw,22px) clamp(14px,1.5vw,18px)`, borderTop:`1px solid ${v.divider}` }}>
+              <p style={{ fontFamily:'var(--font-space)', fontSize:'clamp(13px,1vw,15px)', color:'rgba(26,45,74,0.7)', lineHeight:1.65, fontWeight:500, marginTop:12 }}>{faq.a}</p>
             </div>
           </motion.div>
         )}
@@ -209,7 +240,7 @@ export function FAQSection() {
           <div className="flex flex-col gap-3">
             {faqItems.map((faq, i) => (
               <motion.div key={i} initial={{ opacity:0, y:14 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.35, delay:i*0.07 }}>
-                <FAQItem faq={faq} />
+                <FAQItem faq={faq} index={i} />
               </motion.div>
             ))}
           </div>

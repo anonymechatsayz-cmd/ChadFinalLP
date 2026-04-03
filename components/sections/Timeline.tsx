@@ -86,11 +86,15 @@ const ILLUSTRATIONS = [IlluAlgebre, IlluGeometrie, IlluProbas, IlluFormat];
 function Diamond({ level, active }: { level: string; active: boolean }) {
   return (
     <div
-      className="flex items-center justify-center shrink-0 transition-all duration-300"
+      className="flex items-center justify-center shrink-0"
       style={{
         width: 40, height: 40, background: '#d4a017',
         transform: 'rotate(45deg)', border: '2.5px solid #1a2d4a',
-        boxShadow: active ? '0 0 0 4px rgba(212,160,23,0.25), 3px 3px 0 #1a2d4a' : '2px 2px 0 #1a2d4a', flexShrink: 0,
+        boxShadow: active
+          ? '0 0 0 5px rgba(212,160,23,0.22), 3px 3px 0 #1a2d4a'
+          : '2px 2px 0 #1a2d4a',
+        transition: 'box-shadow 0.4s ease',
+        flexShrink: 0,
       }}>
       <span style={{ transform: 'rotate(-45deg)', fontFamily: 'var(--font-cinzel)', fontWeight: 900, fontSize: level.length > 2 ? 9 : 11, color: '#1a2d4a', lineHeight: 1 }}>{level}</span>
     </div>
@@ -106,7 +110,7 @@ export function Timeline() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeModule, setActiveModule] = useState(0);
 
-  // IntersectionObserver — reliable module tracking (no GSAP closure bugs)
+  // IntersectionObserver — reliable module tracking
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     cardRefs.current.forEach((card, i) => {
@@ -121,7 +125,7 @@ export function Timeline() {
     return () => observers.forEach(obs => obs.disconnect());
   }, []);
 
-  // GSAP — progress bar only
+  // GSAP — progress bar scrub
   useGSAP(() => {
     if (progressBarRef.current) {
       gsap.fromTo(progressBarRef.current,
@@ -142,32 +146,60 @@ export function Timeline() {
 
   const ActiveIllustration = ILLUSTRATIONS[activeModule];
 
+  // Spring config for card entrance
+  const cardSpring = { type: 'spring' as const, stiffness: 65, damping: 18 };
+
   return (
     <section ref={containerRef} className="relative overflow-x-clip border-t-4 border-[#1a2d4a]" style={{ background: '#d4e8f5' }}>
 
       {/* ── TITRE ── */}
-      <div className="text-center pt-14 pb-8 px-6">
-        <h2 style={{ fontFamily: 'var(--font-cinzel)', fontWeight: 900, fontSize: 'clamp(24px, 4vw, 52px)', color: '#1a2d4a', lineHeight: 1.1, textTransform: 'uppercase' }}>
+      <motion.div
+        className="text-center pt-14 pb-8 px-6"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.6 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.h2
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ ...cardSpring, delay: 0.05 }}
+          style={{ fontFamily: 'var(--font-cinzel)', fontWeight: 900, fontSize: 'clamp(24px, 4vw, 52px)', color: '#1a2d4a', lineHeight: 1.1, textTransform: 'uppercase' }}
+        >
           Ce que contient le guide
-        </h2>
-        <p style={{ fontFamily: 'var(--font-space)', fontSize: 'clamp(13px, 1.2vw, 16px)', color: 'rgba(26,45,74,0.65)', marginTop: 8, fontWeight: 500 }}>
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ ...cardSpring, delay: 0.15 }}
+          style={{ fontFamily: 'var(--font-space)', fontSize: 'clamp(13px, 1.2vw, 16px)', color: 'rgba(26,45,74,0.65)', marginTop: 8, fontWeight: 500 }}
+        >
           4 modules pour tout maîtriser, du sol au sommet
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
 
       <div className="max-w-6xl mx-auto px-4 pb-14">
         <div className="flex gap-8 lg:gap-12 items-start">
 
           {/* ── PANNEAU ILLUSTRATION GAUCHE — sticky ── */}
-          <div className="hidden md:flex shrink-0 flex-col self-start sticky" style={{ width: 220, top: '20vh' }}>
+          <motion.div
+            className="hidden md:flex shrink-0 flex-col self-start sticky"
+            style={{ width: 220, top: '20vh' }}
+            initial={{ opacity: 0, x: -36 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ ...cardSpring, delay: 0.2 }}
+          >
             <div className="flex flex-col items-center rounded-2xl overflow-hidden" style={{ background: '#ffffff', border: '4px solid #1a2d4a', boxShadow: '6px 6px 0 #1a2d4a', padding: '20px 14px 14px' }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeModule}
-                  initial={{ opacity: 0, y: 10, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.96 }}
-                  transition={{ duration: 0.32, ease: 'easeOut' }}
+                  initial={{ opacity: 0, scale: 0.9, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, scale: 0.92, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
                   className="flex items-center justify-center"
                   style={{ minHeight: 160 }}
                 >
@@ -177,10 +209,10 @@ export function Timeline() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`label-${activeModule}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
                   style={{ marginTop: 10, borderTop: '2px solid rgba(26,45,74,0.15)', paddingTop: 8, width: '100%', textAlign: 'center' }}
                 >
                   <span style={{ fontFamily: 'var(--font-cinzel)', fontWeight: 700, fontSize: 10, color: '#1a2d4a', letterSpacing: '.15em', textTransform: 'uppercase' }}>
@@ -193,24 +225,28 @@ export function Timeline() {
               {modules.map((_, i) => (
                 <motion.div
                   key={i}
-                  animate={{ width: i === activeModule ? 20 : 7, background: i === activeModule ? '#d4a017' : 'rgba(26,45,74,0.25)' }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                  style={{ height: 7, borderRadius: 9999, border: i === activeModule ? '2px solid #1a2d4a' : '2px solid transparent' }}
+                  animate={{
+                    width: i === activeModule ? 20 : 7,
+                    background: i === activeModule ? '#d4a017' : 'rgba(26,45,74,0.25)',
+                    border: i === activeModule ? '2px solid #1a2d4a' : '2px solid transparent',
+                  }}
+                  transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                  style={{ height: 7, borderRadius: 9999 }}
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* ── TIMELINE DROITE ── */}
           <div className="flex-1 min-w-0">
             <div className="relative">
 
-              {/* Ligne verticale — Layer 1: fond statique */}
+              {/* Ligne verticale — fond statique */}
               <div className="absolute top-0 bottom-0 pointer-events-none" style={{
                 left: 19, width: 3, borderRadius: 4,
                 background: 'rgba(26,45,74,0.18)',
               }} />
-              {/* Ligne verticale — Layer 2: progression orange GSAP scrub */}
+              {/* Ligne verticale — progression GSAP scrub */}
               <div ref={progressBarRef} className="absolute top-0 pointer-events-none" style={{
                 left: 19, width: 3, borderRadius: 4, height: '0%',
                 background: 'linear-gradient(to bottom, #EC6426, #d4a017)',
@@ -224,19 +260,27 @@ export function Timeline() {
                     className="flex items-start gap-5"
                   >
                     <motion.div
-                      initial={{ opacity: 0, x: 40, y: 20 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0 }}
+                      initial={{ opacity: 0, x: 52 }}
+                      whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: '-60px' }}
-                      transition={{ duration: 0.6, delay: 0.05, ease: 'backOut' }}
+                      transition={{ ...cardSpring, delay: i * 0.09 }}
+                      whileHover={{ y: -3, transition: { duration: 0.2, ease: 'easeOut' } }}
                       className="flex items-start gap-5 w-full"
                     >
                       <div className="shrink-0" style={{ marginTop: 18, zIndex: 10 }}>
                         <Diamond level={mod.level} active={activeModule === i} />
                       </div>
-                      <div className="flex-1 rounded-2xl transition-all duration-300"
+                      <motion.div
+                        className="flex-1 rounded-2xl"
+                        animate={{
+                          boxShadow: activeModule === i
+                            ? '5px 5px 0 #1a2d4a, 0 8px 24px rgba(26,45,74,0.12)'
+                            : '4px 4px 0 rgba(26,45,74,0.5)',
+                        }}
+                        transition={{ duration: 0.35, ease: 'easeOut' }}
                         style={{
-                          background: '#ffffff', border: `3px solid #1a2d4a`,
-                          boxShadow: activeModule === i ? '5px 5px 0 #1a2d4a, 0 8px 24px rgba(26,45,74,0.12)' : '4px 4px 0 rgba(26,45,74,0.5)',
+                          background: '#ffffff',
+                          border: `3px solid #1a2d4a`,
                           padding: 'clamp(16px, 2vw, 24px)',
                         }}>
                         <p style={{ fontFamily: 'var(--font-montserrat)', fontWeight: 800, fontSize: 10, color: '#d4a017', letterSpacing: '.18em', textTransform: 'uppercase', marginBottom: 5 }}>
@@ -248,17 +292,17 @@ export function Timeline() {
                         <p style={{ fontFamily: 'var(--font-space)', fontSize: 'clamp(13px, 1vw, 15px)', color: 'rgba(26,45,74,0.72)', lineHeight: 1.65, fontWeight: 400 }}>
                           {mod.desc}
                         </p>
-                      </div>
+                      </motion.div>
                     </motion.div>
                   </div>
                 ))}
 
                 {/* ── CTA FINAL ── */}
                 <motion.div
-                  initial={{ opacity: 0, x: 40, y: 20 }}
-                  whileInView={{ opacity: 1, x: 0, y: 0 }}
+                  initial={{ opacity: 0, y: 32, scale: 0.97 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, margin: '-60px' }}
-                  transition={{ duration: 0.6, ease: 'backOut' }}
+                  transition={{ ...cardSpring, delay: 0.1 }}
                   className="flex items-center gap-5"
                 >
                   <div className="shrink-0" style={{ zIndex: 10 }}>
