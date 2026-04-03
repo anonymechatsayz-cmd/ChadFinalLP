@@ -1,73 +1,10 @@
 'use client';
 
-import { ShieldCheck, Lock } from 'lucide-react';
+import { ShieldCheck, Lock, Zap } from 'lucide-react';
 import { GreekCTA } from '@/components/ui';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { faqItems, offerConfig } from '@/lib/offer';
-
-// ─── COUNTDOWN MARBRE — même DA que le Hero ───────────────────────────────────
-function CountdownMarble() {
-  const [timeLeft, setTimeLeft] = useState({ h: 47, m: 59, s: 59 });
-
-  useEffect(() => {
-    const target = (offerConfig as any).countdownTarget
-      ? new Date((offerConfig as any).countdownTarget).getTime()
-      : Date.now() + 48 * 60 * 60 * 1000;
-
-    const tick = () => {
-      const diff = Math.max(0, target - Date.now());
-      setTimeLeft({
-        h: Math.floor(diff / 3600000),
-        m: Math.floor((diff % 3600000) / 60000),
-        s: Math.floor((diff % 60000) / 1000),
-      });
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  const pad = (n: number) => String(n).padStart(2, '0');
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.45, delay: 0.15 }}
-      className="flex flex-col items-center gap-1.5 mb-10"
-    >
-      <span style={{
-        fontFamily: 'var(--font-space)', fontWeight: 600,
-        fontSize: 'clamp(9px, 0.7vw, 11px)',
-        letterSpacing: '.15em', color: 'rgba(232,201,106,0.7)', textTransform: 'uppercase',
-      }}>
-        L&apos;offre expire dans
-      </span>
-      <div style={{
-        display: 'flex', alignItems: 'center', gap: 6,
-        background: 'linear-gradient(135deg, #ede5da 0%, #d8ccbc 40%, #e8ddd0 70%, #cfc3b4 100%)',
-        border: '2.5px solid #8a7968',
-        borderRadius: 10,
-        padding: '8px 20px',
-        boxShadow: '3px 3px 0 #5a4e3e, inset 0 1px 0 rgba(255,255,255,0.45)',
-      }}>
-        {[
-          { val: pad(timeLeft.h), unit: 'h' },
-          { val: pad(timeLeft.m), unit: 'm' },
-          { val: pad(timeLeft.s), unit: 's' },
-        ].map((seg, i) => (
-          <span key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            {i > 0 && <span style={{ fontFamily: 'var(--font-cinzel)', fontSize: '18px', color: '#8a7968', margin: '0 4px' }}>·</span>}
-            <span style={{ fontFamily: 'var(--font-cinzel)', fontWeight: 900, fontSize: '24px', color: '#2a1e12' }}>{seg.val}</span>
-            <span style={{ fontFamily: 'var(--font-space)', fontWeight: 700, fontSize: '11px', color: '#6a5e4e' }}>{seg.unit}</span>
-          </span>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
 
 // ─── Icônes SVG programme (aucun emoji) ─────────────────────────────────────
 const IconVideo = () => (
@@ -109,50 +46,19 @@ const PROGRAMME = [
 ];
 
 // ─── FAQ ────────────────────────────────────────────────────────────────────
-// Alternating warm (orange/peach) and cool (sky blue) — matching DA palette
-const FAQ_VARIANTS = [
-  {
-    bg: '#fde8d6',
-    border: '#e8956a',
-    shadow: '#c4704a',
-    divider: 'rgba(232,149,106,0.35)',
-  },
-  {
-    bg: '#d4e8f5',
-    border: '#7ab4d0',
-    shadow: '#4a8aaa',
-    divider: 'rgba(122,180,208,0.35)',
-  },
-];
-
-function FAQItem({ faq, index }: { faq: any; index: number }) {
+function FAQItem({ faq }: { faq: any }) {
   const [open, setOpen] = useState(false);
-  const v = FAQ_VARIANTS[index % 2];
   return (
-    <div style={{
-      background: v.bg,
-      border: `2px solid ${v.border}`,
-      borderRadius: 10,
-      boxShadow: open ? `4px 4px 0 ${v.shadow}` : `3px 3px 0 ${v.shadow}`,
-      overflow: 'hidden',
-      transition: 'box-shadow 0.2s ease',
-    }}>
+    <div style={{ background:'linear-gradient(160deg,#ede5da 0%,#d8ccbc 40%,#e8ddd0 70%,#cfc3b4 100%)', border:'2px solid #8a7968', borderRadius:10, boxShadow: open ? '4px 4px 0 #5a4e3e' : '3px 3px 0 #5a4e3e', overflow:'hidden' }}>
       <button onClick={() => setOpen(!open)} className="w-full text-left flex justify-between items-center outline-none" style={{ padding:'clamp(14px,1.5vw,18px) clamp(16px,2vw,22px)', gap:16 }}>
-        <span style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#1a2d4a', letterSpacing:'.02em' }}>{faq.q}</span>
-        <motion.div
-          animate={{ rotate: open ? 45 : 0 }}
-          transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="flex items-center justify-center shrink-0"
-          style={{ width: 32, height: 32, borderRadius: '50%', background: '#d4a017', flexShrink: 0 }}
-        >
-          <span style={{ color: '#fff', fontSize: 20, fontFamily: 'var(--font-cinzel)', lineHeight: 1, display: 'block', marginTop: -1 }}>+</span>
-        </motion.div>
+        <span style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#2a1e12', letterSpacing:'.02em' }}>{faq.q}</span>
+        <motion.span animate={{ rotate: open ? 45 : 0 }} style={{ color:'#d4a017', fontSize:22, fontFamily:'var(--font-cinzel)', flexShrink:0 }}>+</motion.span>
       </button>
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ height:0, opacity:0 }} animate={{ height:'auto', opacity:1 }} exit={{ height:0, opacity:0 }} transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }} className="overflow-hidden">
-            <div style={{ padding:`0 clamp(16px,2vw,22px) clamp(14px,1.5vw,18px)`, borderTop:`1px solid ${v.divider}` }}>
-              <p style={{ fontFamily:'var(--font-space)', fontSize:'clamp(13px,1vw,15px)', color:'rgba(26,45,74,0.7)', lineHeight:1.65, fontWeight:500, marginTop:12 }}>{faq.a}</p>
+          <motion.div initial={{ height:0, opacity:0 }} animate={{ height:'auto', opacity:1 }} exit={{ height:0, opacity:0 }} className="overflow-hidden">
+            <div style={{ padding:'0 clamp(16px,2vw,22px) clamp(14px,1.5vw,18px)', borderTop:'1px solid rgba(138,121,104,0.4)' }}>
+              <p style={{ fontFamily:'var(--font-space)', fontSize:'clamp(13px,1vw,15px)', color:'rgba(42,30,18,0.68)', lineHeight:1.65, fontWeight:500, marginTop:12 }}>{faq.a}</p>
             </div>
           </motion.div>
         )}
@@ -162,10 +68,13 @@ function FAQItem({ faq, index }: { faq: any; index: number }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-/** Arsenal pricing section only — without FAQ */
-export function PricingSection() {
+export function PricingFAQ() {
+  const faqSchema = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: faqItems.map(f => ({ '@type':'Question', name:f.q, acceptedAnswer:{ '@type':'Answer', text:f.a } })) };
+
   return (
-    <section id="pricing" className="relative overflow-hidden py-24 px-4 md:px-8"
+    <>
+      {/* ── PRICING ── */}
+      <section id="pricing" className="relative overflow-hidden py-24 px-4 md:px-8"
         style={{ background:'linear-gradient(180deg,#071229 0%,#0a1628 45%,#0d1b3e 80%,#071229 100%)' }}>
 
         {/* Ligne dorée haut */}
@@ -178,15 +87,10 @@ export function PricingSection() {
 
         <div className="max-w-6xl mx-auto relative z-10">
           {/* Titre */}
-          <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5 }} className="text-center mb-8">
+          <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.5 }} className="text-center mb-14">
             <p style={{ fontFamily:'var(--font-montserrat)', fontWeight:800, fontSize:10, color:'#EC6426', letterSpacing:'.2em', textTransform:'uppercase', marginBottom:10 }}>Accès complet · Paiement unique</p>
             <h2 style={{ fontFamily:'var(--font-cinzel)', fontWeight:900, fontSize:'clamp(28px,5vw,64px)', color:'#f5ecd4', textTransform:'uppercase', lineHeight:1.05, textShadow:'0 4px 30px rgba(0,0,0,0.3)' }}>L'Arsenal Complet</h2>
           </motion.div>
-
-          {/* ── COUNTDOWN MARBRE ── */}
-          <div className="flex justify-center">
-            <CountdownMarble />
-          </div>
 
           {/* ── SPLIT CARD 60/40 ── */}
           <motion.div initial={{ opacity:0, y:32 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
@@ -199,16 +103,15 @@ export function PricingSection() {
                 <p style={{ fontFamily:'var(--font-montserrat)', fontWeight:800, fontSize:10, color:'#2a1e12', opacity:0.6, letterSpacing:'.18em', textTransform:'uppercase', marginBottom:6 }}>Ce que tu obtiens</p>
                 <h3 style={{ fontFamily:'var(--font-cinzel)', fontWeight:900, fontSize:'clamp(16px,1.8vw,22px)', color:'#2a1e12', textTransform:'uppercase' }}>Le Programme Maths Ultime</h3>
               </div>
-              <ul className="flex flex-col gap-4">
+              <ul className="flex flex-col gap-5">
                 {PROGRAMME.map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 px-3 py-2.5 rounded-lg"
-                    style={{ background:'rgba(236,100,38,0.04)', borderLeft:'3px solid #EC6426' }}>
+                  <li key={i} className="flex items-start gap-4">
                     <div className="shrink-0 flex items-center justify-center rounded-full mt-0.5"
                       style={{ width:34, height:34, background:'linear-gradient(135deg,#1a2d4a 0%,#0d1b3e 100%)', border:'1.5px solid #EC6426', color:'#ffffff' }}>
                       <item.Icon />
                     </div>
                     <div>
-                      <p style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#1a2d4a', marginBottom:2 }}>{item.label}</p>
+                      <p style={{ fontFamily:'var(--font-cinzel)', fontWeight:700, fontSize:'clamp(13px,1.1vw,15px)', color:'#2a1e12', marginBottom:2 }}>{item.label}</p>
                       <p style={{ fontFamily:'var(--font-space)', fontSize:'clamp(12px,0.9vw,13px)', color:'rgba(42,30,18,0.58)', fontWeight:500, lineHeight:1.5 }}>{item.desc}</p>
                     </div>
                   </li>
@@ -286,15 +189,9 @@ export function PricingSection() {
             </div>
           </motion.div>
         </div>
-    </section>
-  );
-}
+      </section>
 
-/** FAQ section — to be placed after CTANavy */
-export function FAQSection() {
-  const faqSchema = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: faqItems.map(f => ({ '@type':'Question', name:f.q, acceptedAnswer:{ '@type':'Answer', text:f.a } })) };
-  return (
-    <>
+      {/* ── FAQ ── */}
       <section className="py-20 px-4 md:px-8 relative overflow-hidden"
         style={{ background:'linear-gradient(180deg,#FFF8F0 0%,#FDFBF7 60%,#F0E6D4 100%)', borderTop:'3px solid rgba(212,168,83,0.3)' }}>
         {[{s:'Φ',t:5,l:2,sz:32,r:-10},{s:'Λ',t:80,l:94,sz:28,r:15}].map((m,i) => (
@@ -308,23 +205,13 @@ export function FAQSection() {
           <div className="flex flex-col gap-3">
             {faqItems.map((faq, i) => (
               <motion.div key={i} initial={{ opacity:0, y:14 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:0.35, delay:i*0.07 }}>
-                <FAQItem faq={faq} index={i} />
+                <FAQItem faq={faq} />
               </motion.div>
             ))}
           </div>
         </div>
       </section>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-    </>
-  );
-}
-
-/** @deprecated Use PricingSection + FAQSection separately */
-export function PricingFAQ() {
-  return (
-    <>
-      <PricingSection />
-      <FAQSection />
     </>
   );
 }

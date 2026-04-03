@@ -76,7 +76,7 @@ function LeftStelesStack() {
           {RULE}
           <p style={{ ...cn, fontSize: 12, fontWeight: 700, color: STELE_TXT, lineHeight: 1.35, textTransform: 'uppercase', letterSpacing: '.08em', margin: 0,
             textShadow: '0 1px 2px rgba(255,255,255,0.55), 0 -1px 1px rgba(0,0,0,0.12)' }}>
-            <span style={{ color: '#EC6426', textShadow: '0 0 8px rgba(212,160,23,0.6), 0 1px 2px rgba(255,255,255,0.55)' }}>Le meilleur guide</span><br/>de maths en France
+            Le meilleur guide<br/>de maths en France
           </p>
           {RULE}
         </motion.div>
@@ -144,8 +144,8 @@ function CountdownMarble() {
   return (
     <div className="flex flex-col items-center gap-1">
       <span style={{
-        fontFamily: 'var(--font-space)', fontWeight: 800, fontSize: 'clamp(8px, 0.65vw, 10px)',
-        letterSpacing: '.12em', color: 'rgba(26,58,92,1)', textTransform: 'uppercase', 
+        fontFamily: 'var(--font-space)', fontWeight: 600, fontSize: 'clamp(8px, 0.65vw, 10px)',
+        letterSpacing: '.12em', color: 'rgba(42,30,18,0.6)', textTransform: 'uppercase',
       }}>
         L&apos;offre expire dans
       </span>
@@ -176,12 +176,12 @@ function CountdownMarble() {
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
   return (
-    <section className="relative w-full overflow-hidden" style={{ height:'100svh', minHeight:600, maxHeight:'100svh' }}>
+    <section className="relative w-full overflow-hidden" style={{ height:'100svh', minHeight:700 }}>
 
       {/* VSL (Background Auto-play) */}
       <div
         className="absolute z-[2] left-1/2 -translate-x-1/2"
-        style={{ top:'clamp(310px, 29%, 640px)', width:'clamp(300px, 58vw, 630px)' }}>
+        style={{ top:'clamp(220px, 30%, 340px)', width:'clamp(300px, 58vw, 630px)' }}>
         <div className="relative w-full overflow-hidden" style={{ aspectRatio:'16/9' }}>
           <iframe
             className="absolute inset-0 w-full h-full"
@@ -196,12 +196,11 @@ export function HeroCartoon() {
 
       {/* BACKGROUND IMAGE */}
       <Image
-        src="/background-sans-fond (1).webp"
+        src="/nouveaubackground.png"
         alt=""
         fill
-        className="object-cover object-center object-top sm:object-center z-[10] pointer-events-none"
+        className="object-cover object-center z-[10] pointer-events-none"
         priority
-        quality={100}
         sizes="100vw"
       />
 
@@ -293,11 +292,11 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
         className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none"
-        style={{ top:'clamp(185px, 37%, 320px)' }}>
+        style={{ top:'clamp(195px, 38%, 320px)' }}>
 
         <div style={{ width:'clamp(340px, 38vw, 520px)', aspectRatio:'16/9' }} />
 
-        <div className="pointer-events-auto" style={{ marginTop:'48px', display:'flex', flexDirection:'column', alignItems:'center' }}>
+        <div className="pointer-events-auto" style={{ marginTop:'60px', display:'flex', flexDirection:'column', alignItems:'center' }}>
           <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-5">
             <CountdownMarble />
           </motion.div>
