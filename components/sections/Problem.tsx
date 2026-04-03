@@ -133,28 +133,28 @@ export function Problem() {
                 border: '2.5px solid #8a7968',
                 borderRadius: 12,
                 boxShadow: '5px 5px 0 #5a4e3e, inset 0 1px 0 rgba(255,255,255,0.45)',
-                padding: '24px 22px 28px',
-                display: 'flex', flexDirection: 'column', gap: 12,
+                padding: '28px 26px 32px',
+                display: 'flex', flexDirection: 'column', gap: 14,
               }}>
                 {RULE}
-                {/* Icône */}
-                <div className="flex justify-center pt-2 pb-1">
+                {/* Icône — plus grande */}
+                <div className="flex justify-center pt-2 pb-1" style={{ transform: 'scale(1.25)', transformOrigin: 'center' }}>
                   <card.Icon />
                 </div>
                 {/* Titre */}
                 <p style={{
-                  fontFamily: 'var(--font-cinzel)', fontWeight: 800,
-                  fontSize: 'clamp(14px, 1.2vw, 17px)', color: '#1a2d4a',
-                  textAlign: 'center', lineHeight: 1.3,
-                  textShadow: '0 1px 2px rgba(255,255,255,0.5)',
+                  fontFamily: 'var(--font-cinzel)', fontWeight: 900,
+                  fontSize: 'clamp(15px, 1.4vw, 19px)', color: '#1a2d4a',
+                  textAlign: 'center', lineHeight: 1.35,
+                  textShadow: '0 1px 0 rgba(255,255,255,0.6)',
                 }}>
                   {card.title}
                 </p>
                 <div style={{ height: 1, background: 'linear-gradient(90deg,transparent,#8a7968 30%,#8a7968 70%,transparent)' }} />
-                {/* Corps */}
+                {/* Corps — plus grand, plus contrasté */}
                 <p style={{
-                  fontFamily: 'var(--font-space)', fontSize: 'clamp(12px, 1vw, 14px)',
-                  color: 'rgba(42,30,18,0.88)', lineHeight: 1.65, fontWeight: 600, textAlign: 'center',
+                  fontFamily: 'var(--font-space)', fontSize: 'clamp(13.5px, 1.1vw, 15.5px)',
+                  color: 'rgba(30,18,8,0.92)', lineHeight: 1.7, fontWeight: 600, textAlign: 'center',
                 }}>
                   {card.text}
                 </p>

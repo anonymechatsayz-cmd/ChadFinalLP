@@ -181,7 +181,7 @@ export function HeroCartoon() {
       {/* VSL (Background Auto-play) */}
       <div
         className="absolute z-[2] left-1/2 -translate-x-1/2"
-        style={{ top:'clamp(130px, 22%, 280px)', width:'clamp(280px, 52vw, 600px)' }}>
+        style={{ top:'clamp(210px, 29%, 340px)', width:'clamp(300px, 58vw, 630px)' }}>
         <div className="relative w-full overflow-hidden" style={{ aspectRatio:'16/9' }}>
           <iframe
             className="absolute inset-0 w-full h-full"
@@ -293,9 +293,9 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
         className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none"
-        style={{ top:'clamp(115px, 26%, 260px)' }}>
+        style={{ top:'clamp(185px, 37%, 320px)' }}>
 
-        <div style={{ width:'clamp(280px, 52vw, 600px)', aspectRatio:'16/9' }} />
+        <div style={{ width:'clamp(340px, 38vw, 520px)', aspectRatio:'16/9' }} />
 
         <div className="pointer-events-auto" style={{ marginTop:'24px', display:'flex', flexDirection:'column', alignItems:'center' }}>
           <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-5">
