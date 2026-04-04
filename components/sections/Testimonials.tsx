@@ -1,7 +1,7 @@
 'use client';
 
 import { Star } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, Variants } from 'motion/react';
 import { CloudCharacter } from '@/components/ui';
 
 const testimonials = [
@@ -31,9 +31,29 @@ const testimonials = [
   },
 ];
 
+const containerVariants: Variants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 48, scale: 0.93 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: 'spring', stiffness: 280, damping: 22 },
+  },
+};
+
 export function Testimonials() {
   return (
-    <section className="relative bg-[#FDFBF7] px-4 py-20 text-center md:px-8" style={{ borderTop: '4px solid #1a2d4a' }}>
+    <section className="relative bg-[#FDFBF7] px-4 py-20 text-center md:px-8 overflow-x-clip" style={{ borderTop: '4px solid #1a2d4a' }}>
       <CloudCharacter
         src="/akward.png"
         alt="Personnage ChadScience"
@@ -42,15 +62,15 @@ export function Testimonials() {
       <div className="relative z-10 mx-auto max-w-6xl">
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.55, type: 'spring', stiffness: 260, damping: 22 }}
           className="mb-12"
         >
           <h2
             className="text-center uppercase"
-            style={{ fontFamily: 'var(--font-cinzel)', color: '#1a2d4a', fontWeight: 900, fontSize: 'clamp(28px, 5vw, 64px)', lineHeight: 1.05, marginBottom: 14 }}
+            style={{ fontFamily: 'var(--font-cinzel)', color: '#1a2d4a', fontWeight: 900, fontSize: 'clamp(26px, 5vw, 64px)', lineHeight: 1.05, marginBottom: 14 }}
           >
             Ils ont hacké le système
           </h2>
@@ -59,15 +79,24 @@ export function Testimonials() {
           </p>
         </motion.div>
 
-        <div className="-mx-4 flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto px-4 pb-8 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:px-0 [&::-webkit-scrollbar]:hidden">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.15 }}
+          className="-mx-4 flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto px-4 pb-8 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:px-0 md:overflow-visible [&::-webkit-scrollbar]:hidden"
+        >
           {testimonials.map((testi, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              className="flex min-w-[85vw] snap-center flex-col bg-white text-left h-full transition-transform hover:-translate-y-1 md:min-w-0"
+              variants={cardVariants}
+              whileHover={{
+                y: -10,
+                scale: 1.03,
+                boxShadow: '0 20px 48px rgba(26,45,74,0.18), 0 6px 16px rgba(26,45,74,0.10)',
+                transition: { type: 'spring', stiffness: 380, damping: 18 },
+              }}
+              className="flex min-w-[85vw] snap-center flex-col bg-white text-left h-full md:min-w-0 cursor-default"
               style={{
                 border: '1px solid rgba(26,45,74,0.1)',
                 boxShadow: '0 2px 16px rgba(26,45,74,0.08)',
@@ -81,8 +110,18 @@ export function Testimonials() {
                 ))}
               </div>
 
+              {/* Note badge */}
+              <div className="px-5 pb-1">
+                <span
+                  className="inline-block text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
+                  style={{ background: 'rgba(212,160,23,0.12)', color: '#997300', fontFamily: 'var(--font-cinzel)' }}
+                >
+                  {testi.note}
+                </span>
+              </div>
+
               {/* Quote */}
-              <div className="flex-grow px-5">
+              <div className="flex-grow px-5 pt-2">
                 <p className="italic leading-relaxed mb-4" style={{ color: 'rgba(26,45,74,0.75)', fontFamily: 'var(--font-space)', fontSize: 'clamp(13px,1vw,15px)', fontWeight: 500 }}>
                   &laquo;&nbsp;{testi.text}&nbsp;&raquo;
                 </p>
@@ -90,12 +129,14 @@ export function Testimonials() {
 
               {/* Author */}
               <div className="flex items-center gap-3 p-5 pt-3" style={{ borderTop: '1px solid rgba(26,45,74,0.07)' }}>
-                <div
+                <motion.div
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
                   style={{ background: testi.bg }}
+                  whileHover={{ scale: 1.15 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                 >
                   {testi.initial}
-                </div>
+                </motion.div>
                 <div>
                   <p style={{ fontFamily: 'var(--font-cinzel)', fontWeight: 700, fontSize: 13, color: '#1a2d4a', fontVariant: 'small-caps', lineHeight: 1.2 }}>{testi.name}</p>
                   <p style={{ fontFamily: 'var(--font-space)', fontSize: 11, color: 'rgba(26,45,74,0.45)', fontWeight: 500, marginTop: 1 }}>{testi.role}</p>
@@ -103,7 +144,7 @@ export function Testimonials() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         <p className="text-xs mt-2" style={{ color: 'rgba(26,45,74,0.3)', fontFamily: 'var(--font-space)', fontWeight: 500 }}>
           Exemples de retours — témoignages non contractuels

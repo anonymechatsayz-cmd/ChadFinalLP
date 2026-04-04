@@ -42,26 +42,26 @@ export function GreekCTA({
   className = '',
 }: GreekCTAProps) {
   const pad = size === 'sm'
-    ? 'clamp(12px,1.2vw,15px) clamp(28px,4vw,56px)'
+    ? 'clamp(12px,1.2vw,15px) clamp(20px,4vw,56px)'
     : size === 'lg'
-    ? 'clamp(20px,2.2vw,28px) clamp(64px,9vw,128px)'
-    : 'clamp(16px,1.8vw,22px) clamp(48px,7vw,96px)';
+    ? 'clamp(14px,2.2vw,28px) clamp(20px,6vw,96px)'
+    : 'clamp(14px,1.8vw,22px) clamp(20px,5vw,80px)';
 
-  const fs = size === 'sm' ? 'clamp(13px,1.1vw,16px)' : size === 'lg' ? 'clamp(18px,2.2vw,26px)' : 'clamp(15px,1.6vw,20px)';
+  const fs = size === 'sm' ? 'clamp(12px,1.1vw,16px)' : size === 'lg' ? 'clamp(16px,2vw,26px)' : 'clamp(14px,1.6vw,20px)';
   const borderCol = goldBorder ? C.gold : C.outline;
   const shadowCol = goldBorder ? C.gold : C.outline;
 
   return (
-    <div className={`flex flex-col items-center gap-3 ${className}`}>
+    <div className={`flex flex-col items-center gap-3 w-full max-w-[min(100%,480px)] ${className}`}>
       <motion.a
         href={href ?? offerConfig.checkoutUrl}
-        whileHover={{ y: 2, boxShadow: `4px 4px 0 ${shadowCol}` }}
-        whileTap={{ y: 4, boxShadow: `2px 2px 0 ${shadowCol}` }}
-        className="relative flex items-center justify-center gap-3 overflow-hidden font-black uppercase rounded-2xl text-white cursor-pointer"
+        animate={{ boxShadow: `6px 6px 0 ${shadowCol}, 0 12px 32px rgba(236,100,38,0.35), inset 0 2px 0 rgba(255,255,255,0.2)` }}
+        whileHover={{ y: 2, boxShadow: `4px 4px 0 ${shadowCol}, 0 6px 20px rgba(236,100,38,0.25), inset 0 2px 0 rgba(255,255,255,0.2)` }}
+        whileTap={{ y: 4, boxShadow: `2px 2px 0 ${shadowCol}, 0 2px 8px rgba(236,100,38,0.15), inset 0 2px 0 rgba(255,255,255,0.2)` }}
+        className="relative flex items-center justify-center gap-3 overflow-hidden font-black uppercase rounded-2xl text-white cursor-pointer w-full"
         style={{
           background: `linear-gradient(165deg, ${C.orangeLt} 0%, ${C.orange} 45%, ${C.orangeHot} 100%)`,
           border: `3px solid ${borderCol}`,
-          boxShadow: `6px 6px 0 ${shadowCol}, 0 12px 32px rgba(236,100,38,0.35), inset 0 2px 0 rgba(255,255,255,0.2)`,
           padding: pad,
           fontSize: fs,
           fontFamily: 'var(--font-montserrat)',

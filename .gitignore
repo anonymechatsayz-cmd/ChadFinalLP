@@ -20,7 +20,7 @@ tsbuildinfo
 *.tsbuildinfo
 
 # Assets (Images, polices, SVGs lourds)
-public/
+
 *.svg
 *.png
 *.jpg

@@ -56,16 +56,16 @@ export function MidPageCta() {
           {/* CTA Button */}
           <motion.a
             href={offerConfig.checkoutUrl}
-            whileHover={{ y: 2, boxShadow: '3px 3px 0 #3d3328' }}
-            whileTap={{ y: 3, boxShadow: '1px 1px 0 #3d3328' }}
-            className="relative flex items-center justify-center gap-3 overflow-hidden font-black uppercase rounded-xl text-white cursor-pointer mt-4"
+            whileHover={{ y: 2, boxShadow: '3px 3px 0 #3d3328, 0 4px 12px rgba(236,100,38,0.2), inset 0 2px 0 rgba(255,255,255,0.2)' }}
+            whileTap={{ y: 3, boxShadow: '1px 1px 0 #3d3328, 0 2px 6px rgba(236,100,38,0.15), inset 0 2px 0 rgba(255,255,255,0.2)' }}
+            className="relative flex items-center justify-center gap-3 overflow-hidden font-black uppercase rounded-xl text-white cursor-pointer mt-4 w-full"
             style={{
               background: 'linear-gradient(165deg, #FF8040 0%, #EC6426 45%, #E04A10 100%)',
               border: '3px solid #2a1e12',
               boxShadow: '5px 5px 0 #3d3328, 0 8px 24px rgba(236,100,38,0.3), inset 0 2px 0 rgba(255,255,255,0.2)',
-              padding: 'clamp(14px, 1.5vw, 18px) clamp(36px, 5vw, 72px)',
-              fontSize: 'clamp(14px, 1.4vw, 18px)',
-              fontFamily: 'var(--font-montserrat)', whiteSpace: 'nowrap', letterSpacing: '.04em',
+              padding: 'clamp(14px, 1.5vw, 18px) clamp(16px, 3vw, 48px)',
+              fontSize: 'clamp(13px, 1.4vw, 18px)',
+              fontFamily: 'var(--font-montserrat)', letterSpacing: '.04em',
             }}>
             <span className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-shine pointer-events-none" />
             Débloquer le Guide — {offerConfig.launchPrice}€

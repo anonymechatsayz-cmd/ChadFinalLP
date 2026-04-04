@@ -76,7 +76,7 @@ function LeftStelesStack() {
           {RULE}
           <p style={{ ...cn, fontSize: 12, fontWeight: 700, color: STELE_TXT, lineHeight: 1.35, textTransform: 'uppercase', letterSpacing: '.08em', margin: 0,
             textShadow: '0 1px 2px rgba(255,255,255,0.55), 0 -1px 1px rgba(0,0,0,0.12)' }}>
-            <span style={{ color: '#EC6426', textShadow: '0 0 8px rgba(212,160,23,0.6), 0 1px 2px rgba(255,255,255,0.55)' }}>Le meilleur guide</span><br/>de maths en France
+            Le meilleur guide<br/>de maths en France
           </p>
           {RULE}
         </motion.div>
@@ -144,7 +144,7 @@ function CountdownMarble() {
   return (
     <div className="flex flex-col items-center gap-1">
       <span style={{
-        fontFamily: 'var(--font-space)', fontWeight: 800, fontSize: 'clamp(8px, 0.65vw, 10px)',
+        fontFamily: 'var(--font-space)', fontWeight: 800, fontSize: 'clamp(10px, 0.85vw, 10px)',
         letterSpacing: '.12em', color: 'rgba(26,58,92,1)', textTransform: 'uppercase', 
       }}>
         L&apos;offre expire dans
@@ -152,7 +152,7 @@ function CountdownMarble() {
       <div style={{
         display: 'flex', alignItems: 'center', gap: 6,
         background: 'linear-gradient(135deg, #ede5da 0%, #d8ccbc 40%, #e8ddd0 70%, #cfc3b4 100%)',
-        border: '2.5px solid #8a7968', borderRadius: 10, padding: '6px 16px',
+        border: '2.5px solid #8a7968', borderRadius: 10, padding: '9px 18px',
         boxShadow: '3px 3px 0 #5a4e3e, inset 0 1px 0 rgba(255,255,255,0.45)',
       }}>
         {[
@@ -176,12 +176,12 @@ function CountdownMarble() {
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
   return (
-    <section className="relative w-full overflow-hidden" style={{ height:'100svh', minHeight:600, maxHeight:'100svh' }}>
+    <section className="relative w-full overflow-x-clip" style={{ height:'100svh', minHeight:600, maxHeight:'100svh' }}>
 
-      {/* VSL (Background Auto-play) */}
+      {/* VSL (Background Auto-play) — desktop uniquement */}
       <div
-        className="absolute z-[2] left-1/2 -translate-x-1/2"
-        style={{ top:'clamp(310px, 29%, 640px)', width:'clamp(300px, 58vw, 630px)' }}>
+        className="absolute z-[2] left-1/2 -translate-x-1/2 hidden sm:block"
+        style={{ top:'clamp(290px, 27%, 580px)', width:'clamp(320px, 58vw, 700px)' }}>
         <div className="relative w-full overflow-hidden" style={{ aspectRatio:'16/9' }}>
           <iframe
             className="absolute inset-0 w-full h-full"
@@ -257,8 +257,8 @@ export function HeroCartoon() {
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.1, duration:0.5 }}
         className="absolute z-20 w-full flex items-center justify-center gap-2 pointer-events-none"
         style={{ top:'clamp(8px, 2%, 20px)' }}>
-        <Image src="/chadlogo.jpeg" alt="ChadSciences" width={32} height={32} className="rounded-full object-cover border border-white/50" />
-        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(27px, 1.1vw, 14px)', color:'#1a3a5c' }}>
+        <Image src="/chadlogo.jpeg" alt="ChadSciences" width={48} height={48} className="rounded-full object-cover border-2 border-white/50" style={{ width: 'clamp(32px, 3.5vw, 52px)', height: 'clamp(32px, 3.5vw, 52px)' }} />
+        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(20px, 2.8vw, 36px)', color:'#1a3a5c' }}>
           MATHS ULTIME
         </span>
       </motion.div>
@@ -266,20 +266,20 @@ export function HeroCartoon() {
       {/* TITRE PRINCIPAL - Style Blanc Pur */}
       <motion.h1
         initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2, duration:0.8, ease: "easeOut" }}
-        className="absolute z-20 w-full text-center whitespace-nowrap pointer-events-none uppercase"
+        className="absolute z-20 w-full text-center pointer-events-none uppercase px-3"
         style={{
           top:'clamp(55px, 7%, 85px)',
-          fontFamily:'var(--font-cinzel)', 
+          fontFamily:'var(--font-cinzel)',
           fontWeight: 900,
-          fontSize:'clamp(16px, 4.5vw, 62px)',
+          fontSize:'clamp(14px, 4vw, 62px)',
           letterSpacing: '0.05em',
-          color: '#FFFFFF',
+          color: '#FFE234',
+          wordBreak: 'break-word',
           textShadow: `
-            1px 1px 0px #E5E5E5,
-            2px 2px 0px #CCCCCC,
-            3px 3px 0px #B3B3B3,
-            4px 4px 0px #999999,
-            0 12px 24px rgba(0,0,0,0.3)
+            1px 1px 0px #a07800,
+            2px 2px 0px #7a5800,
+            3px 3px 0px #4d3500,
+            0 8px 24px rgba(0,0,0,0.3)
           `
         }}>
         PASSE DE 8 À 15/20 EN MATHS
@@ -289,20 +289,43 @@ export function HeroCartoon() {
         <LeftStelesStack />
       </div>
 
-      {/* COLONNE CENTRALE */}
+      {/* COLONNE CENTRALE — Desktop : après le VSL | Mobile : centrée */}
       <motion.div
         initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
-        className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none"
-        style={{ top:'clamp(185px, 37%, 320px)' }}>
+        className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-4"
+        style={{ top:'clamp(170px, 32%, 300px)' }}>
 
-        <div style={{ width:'clamp(340px, 38vw, 520px)', aspectRatio:'16/9' }} />
+        {/* Espace VSL (desktop uniquement) */}
+        <div className="hidden sm:block" style={{ width:'clamp(320px, 58vw, 700px)', aspectRatio:'16/9' }} />
 
-        <div className="pointer-events-auto" style={{ marginTop:'48px', display:'flex', flexDirection:'column', alignItems:'center' }}>
-          <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-5">
+        {/* VSL mobile — dans le flux */}
+        <div className="sm:hidden w-full overflow-hidden rounded-xl" style={{ aspectRatio:'16/9', maxWidth: 380, marginTop: 4 }}>
+          <iframe
+            className="w-full h-full"
+            src={`${getEmbed(offerConfig.vslUrl)}?autoplay=1`}
+            title="VSL"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+
+        <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop:'clamp(0px, 0vh, 80px)' }}>
+          <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-2">
             <CountdownMarble />
           </motion.div>
-          <motion.div initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.65, duration:0.5 }} className="mt-3">
-            <GreekCTA size="lg" goldBorder={false} showBadges={true} />
+          <motion.div initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.65, duration:0.5 }} className="mt-3 w-full flex justify-center px-2">
+            <div className="flex flex-col items-center w-full max-w-[min(100%,480px)]">
+              <GreekCTA size="md" goldBorder={false} showBadges={false} />
+              <div className="flex items-center gap-3 flex-wrap justify-center mt-3">
+                {['Accès à vie', '+300h de travail', 'PDF + Vidéos'].map((label, i) => (
+                  <div key={i} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
+                    style={{ background: 'rgba(255,255,255,0.97)', border: '1.5px solid rgba(26,26,26,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
+                    <span style={{ fontSize: 'clamp(11px, 0.85vw, 13px)', color: 'rgba(20,40,60,0.92)', fontFamily: 'var(--font-inter)', fontWeight: 600 }}>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
       </motion.div>
@@ -311,8 +334,8 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, x:80 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.4, duration:0.85, type:'spring', stiffness:60 }}
         className="absolute z-30 hidden md:block pointer-events-none"
-        style={{ right:'-2vw', bottom:0, width:'clamp(300px, 38vw, 550px)', height:'clamp(500px, 95vh, 850px)' }}>
-        <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" style={{ filter:'drop-shadow(4px 6px 0px rgba(26,26,26,0.2)) drop-shadow(0 12px 30px rgba(0,0,0,0.15))' }} sizes="440px" priority />
+        style={{ right:'0', bottom:0, width:'clamp(280px, 36vw, 520px)', height:'clamp(480px, 92vh, 820px)' }}>
+        <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} sizes="(max-width: 1200px) 36vw, 520px" priority />
       </motion.div>
 
       <div className="absolute bottom-0 left-0 right-0 z-[25] h-[6%] pointer-events-none" style={{ background:'linear-gradient(to top,#FDFBF7,transparent)' }} />
