@@ -165,7 +165,7 @@ function FAQItem({ faq, index }: { faq: any; index: number }) {
 /** Arsenal pricing section only — without FAQ */
 export function PricingSection() {
   return (
-    <section id="pricing" className="relative overflow-hidden py-24 px-4 md:px-8"
+    <section id="pricing" className="relative overflow-hidden py-12 md:py-24 px-4 md:px-8"
         style={{ background:'linear-gradient(180deg,#071229 0%,#0a1628 45%,#0d1b3e 80%,#071229 100%)' }}>
 
         {/* Ligne dorée haut */}
@@ -295,7 +295,7 @@ export function FAQSection() {
   const faqSchema = { '@context':'https://schema.org', '@type':'FAQPage', mainEntity: faqItems.map(f => ({ '@type':'Question', name:f.q, acceptedAnswer:{ '@type':'Answer', text:f.a } })) };
   return (
     <>
-      <section className="py-20 px-4 md:px-8 relative overflow-hidden"
+      <section className="py-12 md:py-20 px-4 md:px-8 relative overflow-hidden"
         style={{ background:'linear-gradient(180deg,#FFF8F0 0%,#FDFBF7 60%,#F0E6D4 100%)', borderTop:'3px solid rgba(212,168,83,0.3)' }}>
         {[{s:'Φ',t:5,l:2,sz:32,r:-10},{s:'Λ',t:80,l:94,sz:28,r:15}].map((m,i) => (
           <span key={i} className="absolute select-none pointer-events-none" style={{ top:`${m.t}%`, left:`${m.l}%`, fontSize:m.sz, opacity:0.06, color:'#1a2d4a', transform:`rotate(${m.r}deg)`, fontFamily:'var(--font-cinzel)', fontWeight:700 }}>{m.s}</span>

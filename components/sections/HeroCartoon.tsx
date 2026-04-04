@@ -271,7 +271,7 @@ export function HeroCartoon() {
           top:'clamp(55px, 7%, 85px)',
           fontFamily:'var(--font-cinzel)',
           fontWeight: 900,
-          fontSize:'clamp(14px, 4vw, 62px)',
+          fontSize:'clamp(18px, 4vw, 62px)',
           letterSpacing: '0.05em',
           color: '#FFE234',
           wordBreak: 'break-word',

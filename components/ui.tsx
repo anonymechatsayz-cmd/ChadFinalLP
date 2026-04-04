@@ -65,7 +65,7 @@ export function GreekCTA({
           padding: pad,
           fontSize: fs,
           fontFamily: 'var(--font-montserrat)',
-          whiteSpace: 'nowrap',
+          textAlign: 'center',
           letterSpacing: '.04em',
         }}
       >

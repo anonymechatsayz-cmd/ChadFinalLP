@@ -84,7 +84,7 @@ export function Problem() {
   const isMobile = useIsMobile();
   return (
     <section
-      className="relative overflow-hidden py-24 px-4 md:px-8"
+      className="relative overflow-hidden py-12 md:py-24 px-4 md:px-8"
       style={{ background: 'linear-gradient(180deg, #FFF8F0 0%, #FDFBF7 60%, #F0E6D4 100%)', borderTop: '3px solid rgba(212,168,83,0.35)' }}
     >
       {/* Symboles grecs décoratifs */}

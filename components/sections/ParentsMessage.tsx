@@ -32,7 +32,7 @@ const RULE = <div style={{ width: '100%', height: 1, background: 'linear-gradien
 export function ParentsMessage() {
   return (
     <section
-      className="relative overflow-hidden py-24 px-4 md:px-8"
+      className="relative overflow-hidden py-12 md:py-24 px-4 md:px-8"
       style={{ background: 'linear-gradient(180deg, #FDFBF7 0%, #F5EAD8 50%, #EDE0CC 100%)', borderTop: '3px solid rgba(212,168,83,0.35)' }}
     >
       {/* Symboles grecs */}
@@ -107,10 +107,10 @@ export function ParentsMessage() {
           </motion.div>
 
           {/* Maths Ultime — stèle premium navy */}
+          <div className="md:-translate-y-2">
           <motion.div
             initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}
-            style={{ transform: 'translateY(-8px)' }}
           >
             <div style={{
               background: 'linear-gradient(160deg, #1e3560 0%, #0d1b3e 50%, #1a2d4a 100%)',
@@ -152,6 +152,7 @@ export function ParentsMessage() {
               </div>
             </div>
           </motion.div>
+          </div>
 
         </div>
       </div>

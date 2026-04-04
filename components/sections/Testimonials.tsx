@@ -53,7 +53,7 @@ const cardVariants: Variants = {
 
 export function Testimonials() {
   return (
-    <section className="relative bg-[#FDFBF7] px-4 py-20 text-center md:px-8 overflow-x-clip" style={{ borderTop: '4px solid #1a2d4a' }}>
+    <section className="relative bg-[#FDFBF7] px-4 py-12 md:py-20 text-center md:px-8 overflow-x-clip" style={{ borderTop: '4px solid #1a2d4a' }}>
       <CloudCharacter
         src="/akward.png"
         alt="Personnage ChadScience"
@@ -84,7 +84,7 @@ export function Testimonials() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
-          className="-mx-4 flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto px-4 pb-8 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:px-0 md:overflow-visible [&::-webkit-scrollbar]:hidden"
+          className="-mx-4 flex snap-x snap-mandatory items-stretch gap-4 md:gap-6 overflow-x-auto px-4 pb-8 [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:px-0 md:overflow-visible [&::-webkit-scrollbar]:hidden"
         >
           {testimonials.map((testi, i) => (
             <motion.div
@@ -96,7 +96,7 @@ export function Testimonials() {
                 boxShadow: '0 20px 48px rgba(26,45,74,0.18), 0 6px 16px rgba(26,45,74,0.10)',
                 transition: { type: 'spring', stiffness: 380, damping: 18 },
               }}
-              className="flex min-w-[85vw] snap-center flex-col bg-white text-left h-full md:min-w-0 cursor-default"
+              className="flex min-w-[80vw] sm:min-w-[85vw] snap-center flex-col bg-white text-left h-full md:min-w-0 cursor-default"
               style={{
                 border: '1px solid rgba(26,45,74,0.1)',
                 boxShadow: '0 2px 16px rgba(26,45,74,0.08)',

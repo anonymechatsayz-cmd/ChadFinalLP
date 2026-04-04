@@ -250,7 +250,7 @@ export function Timeline() {
       </div>
 
       {/* TITRE */}
-      <div className="relative z-10 text-center pt-20 pb-16 px-6">
+      <div className="relative z-10 text-center pt-12 pb-10 md:pt-20 md:pb-16 px-6">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

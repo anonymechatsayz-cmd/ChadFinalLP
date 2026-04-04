@@ -21,7 +21,7 @@ const cardSpring = { type: 'spring' as const, stiffness: 65, damping: 18 };
 
 export function Creator() {
   return (
-    <section className="py-20 px-4 md:px-8 text-white overflow-x-clip" style={{ background: '#1a2d4a', borderTop: '4px solid #d4a017' }}>
+    <section className="py-12 md:py-20 px-4 md:px-8 text-white overflow-x-clip" style={{ background: '#1a2d4a', borderTop: '4px solid #d4a017' }}>
       <div className="max-w-5xl mx-auto">
 
         {/* ── TITRE CENTRÉ ── */}
@@ -101,13 +101,13 @@ export function Creator() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ ...cardSpring, delay: 0.25 }}
-              className="grid grid-cols-3 gap-3 mb-8"
+              className="grid grid-cols-3 gap-2 sm:gap-3 mb-8"
             >
               {stats.map((s, i) => (
                 <div key={i} style={{
                   border: '2px solid rgba(212,160,23,0.45)',
                   borderRadius: 8,
-                  padding: 'clamp(12px, 1.5vw, 18px) clamp(10px, 1vw, 14px)',
+                  padding: 'clamp(8px, 1.5vw, 18px) clamp(6px, 1vw, 14px)',
                   textAlign: 'center',
                   background: 'rgba(212,160,23,0.06)',
                 }}>
