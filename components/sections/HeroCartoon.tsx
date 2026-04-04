@@ -285,7 +285,7 @@ export function HeroCartoon() {
         PASSE DE 8 À 15/20 EN MATHS
       </motion.h1>
       {/* ── STÈLES SUR NUAGES (Zone Gauche) ── */}
-      <div className="absolute z-30 hidden xl:block" style={{ left: 'clamp(20px, 6vw, 100px)', top: 'clamp(300px, 36%, 430px)' }}>
+      <div className="absolute z-30 hidden 2xl:block" style={{ left: 'max(24px, calc(50vw - 660px))', top: 'clamp(300px, 36%, 430px)' }}>
         <LeftStelesStack />
       </div>
 
