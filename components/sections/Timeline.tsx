@@ -26,40 +26,105 @@ const draw: Variants = {
 function IlluMindset() {
   return (
     <svg viewBox="0 0 220 200" className="w-full h-full max-w-[200px] mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Left hemisphere */}
+
+      {/* ── Hémisphère gauche — silhouette principale ── */}
       <motion.path custom={0} variants={draw} initial="hidden" animate="visible"
-        d="M110 28 C88 28, 58 44, 50 68 C40 96, 50 122, 68 136 C74 141, 78 150, 78 158 L110 158 L110 28 Z"
-        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.05)"
+        d="M110 22 C97 22, 78 27, 62 40 C46 53, 35 72, 34 94 C33 116, 41 138, 58 152 C72 163, 92 169, 110 169 Z"
+        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.06)"
       />
-      {/* Right hemisphere */}
+      {/* ── Hémisphère droit — silhouette principale ── */}
       <motion.path custom={1} variants={draw} initial="hidden" animate="visible"
-        d="M110 28 C132 28, 162 44, 170 68 C180 96, 170 122, 152 136 C146 141, 142 150, 142 158 L110 158 L110 28 Z"
-        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.05)"
+        d="M110 22 C123 22, 142 27, 158 40 C174 53, 185 72, 186 94 C187 116, 179 138, 162 152 C148 163, 128 169, 110 169 Z"
+        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.06)"
       />
-      {/* Center dividing line */}
+
+      {/* ── Fissure longitudinale (ligne centrale) ── */}
       <motion.line custom={2} variants={draw} initial="hidden" animate="visible"
-        x1="110" y1="28" x2="110" y2="158" stroke="#1a2d4a" strokeWidth="1.5" strokeDasharray="5 3"
+        x1="110" y1="22" x2="110" y2="169"
+        stroke="#1a2d4a" strokeWidth="1.5" strokeDasharray="4 3"
       />
-      {/* Left brain folds */}
+
+      {/* ══ CIRCONVOLUTIONS GAUCHE ══ */}
+      {/* Gyrus frontal supérieur */}
       <motion.path custom={3} variants={draw} initial="hidden" animate="visible"
-        d="M68 68 Q80 58 90 68 Q80 78 68 68" stroke="#1a2d4a" strokeWidth="1.5"
+        d="M88 32 C82 39, 73 47, 67 58 C73 65, 84 61, 91 52 C97 43, 94 30, 88 32"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
       />
+      {/* Gyrus frontal inférieur */}
       <motion.path custom={4} variants={draw} initial="hidden" animate="visible"
-        d="M56 98 Q70 87 82 98 Q70 109 56 98" stroke="#1a2d4a" strokeWidth="1.5"
+        d="M66 55 C59 65, 53 78, 54 91 C61 92, 68 81, 68 68 C68 58, 68 53, 66 55"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
       />
-      {/* Right brain folds */}
+      {/* Gyrus pariétal */}
       <motion.path custom={5} variants={draw} initial="hidden" animate="visible"
-        d="M152 68 Q140 58 130 68 Q140 78 152 68" stroke="#1a2d4a" strokeWidth="1.5"
+        d="M46 100 C44 113, 47 126, 56 136 C63 130, 63 117, 57 106 C53 97, 46 97, 46 100"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
       />
+      {/* Gyrus occipital */}
       <motion.path custom={6} variants={draw} initial="hidden" animate="visible"
-        d="M164 98 Q150 87 138 98 Q150 109 164 98" stroke="#1a2d4a" strokeWidth="1.5"
+        d="M62 144 C67 154, 80 162, 96 165 C98 157, 90 150, 78 146 C70 142, 61 141, 62 144"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
       />
-      {/* Omega symbol */}
-      <motion.g initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.7, type: "spring", bounce: 0.4 }}>
-        <text x="110" y="130" textAnchor="middle" fill="#d4a017" fontSize="46" fontFamily="Georgia, serif" fontWeight="bold">Ω</text>
+      {/* Sillon intérieur gauche */}
+      <motion.path custom={7} variants={draw} initial="hidden" animate="visible"
+        d="M97 28 C94 52, 93 78, 97 104 C100 124, 102 148, 103 167"
+        stroke="#1a2d4a" strokeWidth="0.9" opacity="0.3" strokeDasharray="3 2"
+      />
+
+      {/* ══ CIRCONVOLUTIONS DROITE (miroir) ══ */}
+      {/* Gyrus frontal supérieur */}
+      <motion.path custom={8} variants={draw} initial="hidden" animate="visible"
+        d="M132 32 C138 39, 147 47, 153 58 C147 65, 136 61, 129 52 C123 43, 126 30, 132 32"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
+      />
+      {/* Gyrus frontal inférieur */}
+      <motion.path custom={9} variants={draw} initial="hidden" animate="visible"
+        d="M154 55 C161 65, 167 78, 166 91 C159 92, 152 81, 152 68 C152 58, 152 53, 154 55"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
+      />
+      {/* Gyrus pariétal */}
+      <motion.path custom={10} variants={draw} initial="hidden" animate="visible"
+        d="M174 100 C176 113, 173 126, 164 136 C157 130, 157 117, 163 106 C167 97, 174 97, 174 100"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
+      />
+      {/* Gyrus occipital */}
+      <motion.path custom={11} variants={draw} initial="hidden" animate="visible"
+        d="M158 144 C153 154, 140 162, 124 165 C122 157, 130 150, 142 146 C150 142, 159 141, 158 144"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="rgba(26,45,74,0.04)"
+      />
+      {/* Sillon intérieur droit */}
+      <motion.path custom={12} variants={draw} initial="hidden" animate="visible"
+        d="M123 28 C126 52, 127 78, 123 104 C120 124, 118 148, 117 167"
+        stroke="#1a2d4a" strokeWidth="0.9" opacity="0.3" strokeDasharray="3 2"
+      />
+
+      {/* ── Points-neurones dorés ── */}
+      <motion.g
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.62, type: "spring", stiffness: 280, damping: 18 }}
+      >
+        <circle cx="75"  cy="63"  r="3"   fill="#d4a017" opacity="0.80" />
+        <circle cx="52"  cy="93"  r="2.5" fill="#d4a017" opacity="0.65" />
+        <circle cx="60"  cy="130" r="3"   fill="#d4a017" opacity="0.75" />
+        <circle cx="90"  cy="161" r="2"   fill="#d4a017" opacity="0.55" />
+        <circle cx="145" cy="63"  r="3"   fill="#d4a017" opacity="0.80" />
+        <circle cx="168" cy="93"  r="2.5" fill="#d4a017" opacity="0.65" />
+        <circle cx="160" cy="130" r="3"   fill="#d4a017" opacity="0.75" />
+        <circle cx="130" cy="161" r="2"   fill="#d4a017" opacity="0.55" />
       </motion.g>
-      {/* Label */}
-      <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.4 }}>
+
+      {/* ── Symbole Ω centré ── */}
+      <motion.g
+        initial={{ opacity: 0, scale: 0.4 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.85, type: "spring", bounce: 0.35 }}
+      >
+        <text x="110" y="124" textAnchor="middle" fill="#d4a017" fontSize="38" fontFamily="Georgia, serif" fontWeight="bold">Ω</text>
+      </motion.g>
+
+      {/* ── Label ── */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.4 }}>
         <text x="110" y="192" textAnchor="middle" fill="#d4a017" fontSize="12" fontStyle="italic" fontFamily="Georgia, serif">Mindset &amp; Prérequis</text>
       </motion.g>
     </svg>
