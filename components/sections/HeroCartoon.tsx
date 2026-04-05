@@ -181,7 +181,7 @@ export function HeroCartoon() {
       {/* VSL (Background Auto-play) — desktop uniquement */}
       <div
         className="absolute z-[2] left-1/2 -translate-x-1/2 hidden sm:block"
-        style={{ top:'clamp(290px, 27%, 580px)', width:'clamp(320px, 58vw, 700px)' }}>
+        style={{ top:'clamp(150px, 27%, 580px)', width:'min(clamp(320px, 58vw, 700px), calc(38svh * 16 / 9))' }}>
         <div className="relative w-full overflow-hidden" style={{ aspectRatio:'16/9' }}>
           <iframe
             className="absolute inset-0 w-full h-full"
@@ -287,7 +287,7 @@ export function HeroCartoon() {
       </motion.h1>
 
       {/* ── STÈLES SUR NUAGES (Zone Gauche) ── */}
-      <div className="absolute z-30 hidden 2xl:block" style={{ left: 'max(24px, calc(50vw - 660px))', top: 'clamp(300px, 36%, 430px)' }}>
+      <div className="absolute z-30 hidden xl:block" style={{ left: 'max(24px, calc(50vw - 660px))', top: 'clamp(300px, 36%, 430px)' }}>
         <LeftStelesStack />
       </div>
 
@@ -295,13 +295,13 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
         className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-4"
-        style={{ top:'clamp(130px, 28%, 300px)' }}>
+        style={{ top:'clamp(150px, 27%, 580px)' }}>
 
         {/* Espace VSL (desktop uniquement — sm:) */}
-        <div className="hidden sm:block" style={{ width:'clamp(320px, 58vw, 700px)', aspectRatio:'16/9' }} />
+        <div className="hidden sm:block" style={{ width:'min(clamp(320px, 58vw, 700px), calc(38svh * 16 / 9))', aspectRatio:'16/9' }} />
 
         {/* VSL mobile — dans le flux, taille réduite pour tout faire tenir */}
-        <div className="sm:hidden w-full overflow-hidden rounded-xl" style={{ aspectRatio:'16/9', maxWidth: 'min(100%, 360px)', marginTop: 2 }}>
+        <div className="sm:hidden w-full overflow-hidden rounded-xl pointer-events-auto" style={{ aspectRatio:'16/9', maxWidth: 'min(100%, 360px)', marginTop: 2 }}>
           <iframe
             className="w-full h-full"
             src={`${getEmbed(offerConfig.vslUrl)}?autoplay=1`}
@@ -335,7 +335,7 @@ export function HeroCartoon() {
       {/* ZEUS (Droite) */}
       <motion.div
         initial={{ opacity:0, x:80 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.4, duration:0.85, type:'spring', stiffness:60 }}
-        className="absolute z-30 hidden md:block pointer-events-none"
+        className="absolute z-30 hidden lg:block pointer-events-none"
         style={{ right:'0', bottom:0, width:'clamp(280px, 36vw, 520px)', height:'clamp(480px, 92vh, 820px)' }}>
         <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} unoptimized sizes="(max-width: 768px) 0px, (max-width: 1440px) 36vw, 520px" priority />
       </motion.div>
