@@ -2,7 +2,8 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { Star, Unlock, Lock } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, Variants } from 'motion/react';
+// CORRECTION 1 : Import universel de framer-motion pour éviter que <motion.div> soit undefined
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, Variants } from 'framer-motion';
 
 const modules = [
   { level: 'I', symbol: 'Ω', label: 'OMEGA · LA BASE ABSOLUE', title: 'Mindset, Attitude & Prérequis', desc: "Le module le plus important. Avant même d'ouvrir un manuel, tu dois adopter la bonne vision des maths : comment ton cerveau apprend, comment maximiser chaque cours, les automatismes à avoir et les prérequis indispensables. Sans ça, tout le reste est fragile.", illuLabel: 'Mindset & Prérequis' },
@@ -24,126 +25,44 @@ const draw: Variants = {
 };
 
 function IlluMindset() {
+  const brainPaths = [
+    "M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z",
+    "M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z",
+    "M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4",
+    "M17.599 6.5a3 3 0 0 0 .399-1.375",
+    "M6.003 5.125A3 3 0 0 0 6.401 6.5",
+    "M3.477 10.896a4 4 0 0 1 .585-.396",
+    "M19.938 10.5a4 4 0 0 1 .585.396",
+    "M6 18a4 4 0 0 1-1.967-.516",
+    "M19.967 17.484A4 4 0 0 1 18 18"
+  ];
+
   return (
-    <svg viewBox="0 0 220 195" className="w-full h-full max-w-[200px] mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="bfL" cx="36%" cy="44%" r="65%">
-          <stop offset="0%" stopColor="rgba(26,45,74,0.22)" />
-          <stop offset="100%" stopColor="rgba(26,45,74,0.05)" />
-        </radialGradient>
-        <radialGradient id="bfR" cx="64%" cy="44%" r="65%">
-          <stop offset="0%" stopColor="rgba(26,45,74,0.22)" />
-          <stop offset="100%" stopColor="rgba(26,45,74,0.05)" />
-        </radialGradient>
-        <radialGradient id="omg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(212,160,23,0.38)" />
-          <stop offset="100%" stopColor="rgba(212,160,23,0)" />
-        </radialGradient>
-        <filter id="fw">
-          <feGaussianBlur stdDeviation="1.5" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-
-      {/* ══ SILHOUETTE — vue supérieure du cerveau ══ */}
-      <motion.path custom={0} variants={draw} initial="hidden" animate="visible"
-        d="M110 14
-           C124 8,144 9,158 16
-           C172 23,184 36,192 52
-           C200 66,206 82,207 98
-           C208 114,204 130,196 143
-           C188 156,174 165,158 170
-           C142 175,126 177,110 177
-           C94 177,78 175,62 170
-           C46 165,32 156,24 143
-           C16 130,12 114,13 98
-           C14 82,20 66,28 52
-           C36 36,48 23,62 16
-           C76 9,96 8,110 14 Z"
-        stroke="#1a2d4a" strokeWidth="3.5" fill="url(#bfL)" strokeLinejoin="round" strokeLinecap="round"
-      />
-
-      {/* ══ FISSURE LONGITUDINALE ══ */}
-      <motion.path custom={1} variants={draw} initial="hidden" animate="visible"
-        d="M110 14 C109 70,111 130,110 177"
-        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
-      />
-
-      {/* ══ GYRI GAUCHE — sillons concentriques s'éloignant de la fissure ══ */}
-      {/* Sillon frontal supérieur */}
-      <motion.path custom={2} variants={draw} initial="hidden" animate="visible"
-        d="M108 34 C94 28,76 28,60 34 C48 38,36 48,28 62"
-        stroke="#1a2d4a" strokeWidth="2.2" fill="none" strokeLinecap="round"
-      />
-      {/* Sillon central (Rolando) — majeur */}
-      <motion.path custom={3} variants={draw} initial="hidden" animate="visible"
-        d="M108 64 C92 58,72 57,55 63 C40 69,26 82,18 98"
-        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
-      />
-      {/* Sillon intrapariétal */}
-      <motion.path custom={4} variants={draw} initial="hidden" animate="visible"
-        d="M108 95 C90 89,70 88,53 96 C37 103,24 118,18 136"
-        stroke="#1a2d4a" strokeWidth="2.4" fill="none" strokeLinecap="round"
-      />
-      {/* Sillon occipital */}
-      <motion.path custom={5} variants={draw} initial="hidden" animate="visible"
-        d="M108 126 C94 120,78 119,64 125 C50 131,38 144,34 160"
-        stroke="#1a2d4a" strokeWidth="2" fill="none" strokeLinecap="round"
-      />
-      {/* Sillons courts de densification */}
-      <motion.path custom={6} variants={draw} initial="hidden" animate="visible"
-        d="M82 48 C70 44,56 46,44 54"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={7} variants={draw} initial="hidden" animate="visible"
-        d="M80 80 C68 76,52 78,40 86"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={8} variants={draw} initial="hidden" animate="visible"
-        d="M78 112 C66 108,50 110,38 118"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-
-      {/* ══ GYRI DROIT (miroir) ══ */}
-      <motion.path custom={9} variants={draw} initial="hidden" animate="visible"
-        d="M112 34 C126 28,144 28,160 34 C172 38,184 48,192 62"
-        stroke="#1a2d4a" strokeWidth="2.2" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={10} variants={draw} initial="hidden" animate="visible"
-        d="M112 64 C128 58,148 57,165 63 C180 69,194 82,202 98"
-        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={11} variants={draw} initial="hidden" animate="visible"
-        d="M112 95 C130 89,150 88,167 96 C183 103,196 118,202 136"
-        stroke="#1a2d4a" strokeWidth="2.4" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={12} variants={draw} initial="hidden" animate="visible"
-        d="M112 126 C126 120,142 119,156 125 C170 131,182 144,186 160"
-        stroke="#1a2d4a" strokeWidth="2" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={13} variants={draw} initial="hidden" animate="visible"
-        d="M138 48 C150 44,164 46,176 54"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={14} variants={draw} initial="hidden" animate="visible"
-        d="M140 80 C152 76,168 78,180 86"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-      <motion.path custom={15} variants={draw} initial="hidden" animate="visible"
-        d="M142 112 C154 108,170 110,182 118"
-        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
-      />
-
-      {/* ══ HUB Ω ══ */}
-      <motion.g initial={{ opacity:0, scale:0.2 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.85, type:"spring", bounce:0.28 }}>
-        <circle cx="110" cy="96" r="26" fill="url(#omg)" />
-        <circle cx="110" cy="96" r="17" fill="rgba(212,160,23,0.10)" stroke="#d4a017" strokeWidth="1.6" />
-        <text x="110" y="105" textAnchor="middle" fill="#d4a017" fontSize="22" fontFamily="Georgia, serif" fontWeight="bold" filter="url(#fw)">Ω</text>
+    <svg viewBox="0 0 220 200" className="w-full h-full max-w-[200px] mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Simple Brain */}
+      <g transform="translate(35, 20) scale(6.25)">
+        {brainPaths.map((path, i) => (
+          <motion.path 
+            key={`path-${i}`}
+            custom={i} variants={draw} initial="hidden" animate="visible"
+            d={path}
+            stroke="#1a2d4a" 
+            strokeWidth="1.5" 
+            strokeLinecap="round" strokeLinejoin="round" 
+            fill="none"
+          />
+        ))}
+      </g>
+      
+      {/* Omega Symbol in the center */}
+      <motion.g initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8, type: "spring" }}>
+        <circle cx="110" cy="95" r="20" fill="#ffffff" stroke="#d4a017" strokeWidth="2" />
+        <text x="110" y="102" textAnchor="middle" fill="#d4a017" fontSize="18" fontFamily="Georgia, serif" fontWeight="bold">Ω</text>
       </motion.g>
 
-      {/* ══ LABEL ══ */}
-      <motion.g initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.1, duration:0.4 }}>
-        <text x="110" y="192" textAnchor="middle" fill="#d4a017" fontSize="11" fontStyle="italic" fontFamily="Georgia, serif" letterSpacing="0.03em">Mindset &amp; Prérequis</text>
+      {/* Label */}
+      <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 0.5 }}>
+        <text x="110" y="190" textAnchor="middle" fill="#d4a017" fontSize="12" fontStyle="italic" fontFamily="Georgia, serif" fontWeight="bold">Mindset &amp; Prérequis</text>
       </motion.g>
     </svg>
   );
@@ -251,7 +170,9 @@ function Diamond({ symbol, active, isPast }: { symbol: string; active: boolean; 
   );
 }
 
-export function Timeline() {
+// CORRECTION 2 : On définit la fonction, puis on l'exporte à la fois par défaut ET nommée.
+// Comme ça, peu importe comment tu l'importes dans ta LandingPage, ça marchera à 100%.
+function Timeline() {
   const containerRef = useRef<HTMLDivElement>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const leftPanelRef = useRef<HTMLDivElement>(null);
@@ -578,3 +499,6 @@ export function Timeline() {
     </section>
   );
 }
+
+export default Timeline;
+export { Timeline };
