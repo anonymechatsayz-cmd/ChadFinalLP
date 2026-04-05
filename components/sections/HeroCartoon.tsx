@@ -337,7 +337,7 @@ export function HeroCartoon() {
         initial={{ opacity:0, x:80 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.4, duration:0.85, type:'spring', stiffness:60 }}
         className="absolute z-30 hidden lg:block pointer-events-none"
         style={{ right:'0', bottom:0, width:'clamp(280px, 36vw, 520px)', height:'clamp(480px, 92vh, 820px)' }}>
-        <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} unoptimized sizes="(max-width: 768px) 0px, (max-width: 1440px) 36vw, 520px" priority />
+        <Image src="/zeuf_4x.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} unoptimized sizes="(max-width: 768px) 0px, (max-width: 1440px) 36vw, 520px" priority />
       </motion.div>
 
       <div className="absolute bottom-0 left-0 right-0 z-[25] h-[6%] pointer-events-none" style={{ background:'linear-gradient(to top,#FDFBF7,transparent)' }} />
