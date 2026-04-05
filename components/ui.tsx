@@ -126,7 +126,7 @@ export const CloudCharacter = ({ src, alt, className = '' }: { src: string; alt:
   <motion.div className={`absolute flex-col items-center z-0 ${className}`}
     animate={{ y: [-8, 8, -8] }} transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}>
     <Image src={src} alt={alt} width={500} height={500} className="w-full h-auto drop-shadow-2xl relative z-0"
-      style={{ transformOrigin: 'bottom center' }} referrerPolicy="no-referrer" unoptimized />
+      style={{ transformOrigin: 'bottom center' }} unoptimized />
   </motion.div>
 );
 

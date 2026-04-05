@@ -54,11 +54,6 @@ const cardVariants: Variants = {
 export function Testimonials() {
   return (
     <section className="relative bg-[#FDFBF7] px-4 py-12 md:py-20 text-center md:px-8 overflow-x-clip" style={{ borderTop: '4px solid #1a2d4a' }}>
-      <CloudCharacter
-        src="/akward.png"
-        alt="Personnage ChadScience"
-        className="absolute top-10 left-4 z-0 hidden w-64 xl:left-12 xl:flex xl:w-80"
-      />
       <div className="relative z-10 mx-auto max-w-6xl">
 
         <motion.div

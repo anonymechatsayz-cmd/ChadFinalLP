@@ -181,7 +181,7 @@ export function HeroCartoon() {
       {/* VSL (Background Auto-play) — desktop uniquement */}
       <div
         className="absolute z-[2] left-1/2 -translate-x-1/2 hidden sm:block"
-        style={{ top:'clamp(150px, 27%, 580px)', width:'min(clamp(320px, 58vw, 700px), calc(38svh * 16 / 9))' }}>
+        style={{ top:'clamp(175px, 31%, 610px)', width:'min(clamp(320px, 58vw, 700px), calc(38svh * 16 / 9))' }}>
         <div className="relative w-full overflow-hidden" style={{ aspectRatio:'16/9' }}>
           <iframe
             className="absolute inset-0 w-full h-full"
@@ -312,7 +312,7 @@ export function HeroCartoon() {
           />
         </div>
 
-        <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop: 0 }}>
+        <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop: 'clamp(0px, 4vh, 48px)' }}>
           <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-2">
             <CountdownMarble />
           </motion.div>

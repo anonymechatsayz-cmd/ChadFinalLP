@@ -25,74 +25,125 @@ const draw: Variants = {
 
 function IlluMindset() {
   return (
-    <svg viewBox="0 0 220 200" className="w-full h-full max-w-[200px] mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 220 195" className="w-full h-full max-w-[200px] mx-auto" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bfL" cx="36%" cy="44%" r="65%">
+          <stop offset="0%" stopColor="rgba(26,45,74,0.22)" />
+          <stop offset="100%" stopColor="rgba(26,45,74,0.05)" />
+        </radialGradient>
+        <radialGradient id="bfR" cx="64%" cy="44%" r="65%">
+          <stop offset="0%" stopColor="rgba(26,45,74,0.22)" />
+          <stop offset="100%" stopColor="rgba(26,45,74,0.05)" />
+        </radialGradient>
+        <radialGradient id="omg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(212,160,23,0.38)" />
+          <stop offset="100%" stopColor="rgba(212,160,23,0)" />
+        </radialGradient>
+        <filter id="fw">
+          <feGaussianBlur stdDeviation="1.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
 
-      {/* ── Hémisphère gauche ── */}
+      {/* ══ SILHOUETTE — vue supérieure du cerveau ══ */}
       <motion.path custom={0} variants={draw} initial="hidden" animate="visible"
-        d="M110 24 C96 24, 75 30, 58 46 C41 62, 32 82, 32 97 C32 112, 38 134, 56 149 C72 163, 92 171, 110 171 Z"
-        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.07)"
+        d="M110 14
+           C124 8,144 9,158 16
+           C172 23,184 36,192 52
+           C200 66,206 82,207 98
+           C208 114,204 130,196 143
+           C188 156,174 165,158 170
+           C142 175,126 177,110 177
+           C94 177,78 175,62 170
+           C46 165,32 156,24 143
+           C16 130,12 114,13 98
+           C14 82,20 66,28 52
+           C36 36,48 23,62 16
+           C76 9,96 8,110 14 Z"
+        stroke="#1a2d4a" strokeWidth="3.5" fill="url(#bfL)" strokeLinejoin="round" strokeLinecap="round"
       />
-      {/* ── Hémisphère droit ── */}
+
+      {/* ══ FISSURE LONGITUDINALE ══ */}
       <motion.path custom={1} variants={draw} initial="hidden" animate="visible"
-        d="M110 24 C124 24, 145 30, 162 46 C179 62, 188 82, 188 97 C188 112, 182 134, 164 149 C148 163, 128 171, 110 171 Z"
-        stroke="#1a2d4a" strokeWidth="2.5" fill="rgba(26,45,74,0.07)"
+        d="M110 14 C109 70,111 130,110 177"
+        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
       />
 
-      {/* ── Fissure longitudinale ── */}
-      <motion.line custom={2} variants={draw} initial="hidden" animate="visible"
-        x1="110" y1="24" x2="110" y2="171"
-        stroke="#1a2d4a" strokeWidth="1.5" strokeDasharray="5 3"
+      {/* ══ GYRI GAUCHE — sillons concentriques s'éloignant de la fissure ══ */}
+      {/* Sillon frontal supérieur */}
+      <motion.path custom={2} variants={draw} initial="hidden" animate="visible"
+        d="M108 34 C94 28,76 28,60 34 C48 38,36 48,28 62"
+        stroke="#1a2d4a" strokeWidth="2.2" fill="none" strokeLinecap="round"
       />
-
-      {/* ── Gyrus gauche haut — courbe élégante ── */}
+      {/* Sillon central (Rolando) — majeur */}
       <motion.path custom={3} variants={draw} initial="hidden" animate="visible"
-        d="M58 62 C62 50, 76 42, 88 50 C100 58, 100 76, 88 86 C76 96, 60 94, 54 108"
-        stroke="#1a2d4a" strokeWidth="2" fill="none"
+        d="M108 64 C92 58,72 57,55 63 C40 69,26 82,18 98"
+        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
       />
-      {/* ── Gyrus gauche bas ── */}
+      {/* Sillon intrapariétal */}
       <motion.path custom={4} variants={draw} initial="hidden" animate="visible"
-        d="M42 114 C44 130, 56 144, 72 148 C84 151, 96 145, 100 152"
-        stroke="#1a2d4a" strokeWidth="2" fill="none"
+        d="M108 95 C90 89,70 88,53 96 C37 103,24 118,18 136"
+        stroke="#1a2d4a" strokeWidth="2.4" fill="none" strokeLinecap="round"
       />
-
-      {/* ── Gyrus droit haut — miroir ── */}
+      {/* Sillon occipital */}
       <motion.path custom={5} variants={draw} initial="hidden" animate="visible"
-        d="M162 62 C158 50, 144 42, 132 50 C120 58, 120 76, 132 86 C144 96, 160 94, 166 108"
-        stroke="#1a2d4a" strokeWidth="2" fill="none"
+        d="M108 126 C94 120,78 119,64 125 C50 131,38 144,34 160"
+        stroke="#1a2d4a" strokeWidth="2" fill="none" strokeLinecap="round"
       />
-      {/* ── Gyrus droit bas ── */}
+      {/* Sillons courts de densification */}
       <motion.path custom={6} variants={draw} initial="hidden" animate="visible"
-        d="M178 114 C176 130, 164 144, 148 148 C136 151, 124 145, 120 152"
-        stroke="#1a2d4a" strokeWidth="2" fill="none"
+        d="M82 48 C70 44,56 46,44 54"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={7} variants={draw} initial="hidden" animate="visible"
+        d="M80 80 C68 76,52 78,40 86"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={8} variants={draw} initial="hidden" animate="visible"
+        d="M78 112 C66 108,50 110,38 118"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
       />
 
-      {/* ── Connexions neurales dorées (hub→nœuds) ── */}
-      <motion.line custom={7}  variants={draw} initial="hidden" animate="visible" x1="74" y1="66"  x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
-      <motion.line custom={8}  variants={draw} initial="hidden" animate="visible" x1="48" y1="110" x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
-      <motion.line custom={9}  variants={draw} initial="hidden" animate="visible" x1="80" y1="150" x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
-      <motion.line custom={10} variants={draw} initial="hidden" animate="visible" x1="146" y1="66"  x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
-      <motion.line custom={11} variants={draw} initial="hidden" animate="visible" x1="172" y1="110" x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
-      <motion.line custom={12} variants={draw} initial="hidden" animate="visible" x1="140" y1="150" x2="110" y2="97" stroke="#d4a017" strokeWidth="1.2" opacity="0.55" />
+      {/* ══ GYRI DROIT (miroir) ══ */}
+      <motion.path custom={9} variants={draw} initial="hidden" animate="visible"
+        d="M112 34 C126 28,144 28,160 34 C172 38,184 48,192 62"
+        stroke="#1a2d4a" strokeWidth="2.2" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={10} variants={draw} initial="hidden" animate="visible"
+        d="M112 64 C128 58,148 57,165 63 C180 69,194 82,202 98"
+        stroke="#1a2d4a" strokeWidth="2.8" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={11} variants={draw} initial="hidden" animate="visible"
+        d="M112 95 C130 89,150 88,167 96 C183 103,196 118,202 136"
+        stroke="#1a2d4a" strokeWidth="2.4" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={12} variants={draw} initial="hidden" animate="visible"
+        d="M112 126 C126 120,142 119,156 125 C170 131,182 144,186 160"
+        stroke="#1a2d4a" strokeWidth="2" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={13} variants={draw} initial="hidden" animate="visible"
+        d="M138 48 C150 44,164 46,176 54"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={14} variants={draw} initial="hidden" animate="visible"
+        d="M140 80 C152 76,168 78,180 86"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
+      />
+      <motion.path custom={15} variants={draw} initial="hidden" animate="visible"
+        d="M142 112 C154 108,170 110,182 118"
+        stroke="#1a2d4a" strokeWidth="1.5" fill="none" strokeLinecap="round"
+      />
 
-      {/* ── Nœuds neuronaux ── */}
-      <motion.g initial={{ opacity:0, scale:0 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.68, type:"spring", stiffness:260, damping:16 }}>
-        <circle cx="74"  cy="66"  r="4"   fill="#d4a017" opacity="0.90" />
-        <circle cx="48"  cy="110" r="3.5" fill="#d4a017" opacity="0.78" />
-        <circle cx="80"  cy="150" r="3"   fill="#d4a017" opacity="0.70" />
-        <circle cx="146" cy="66"  r="4"   fill="#d4a017" opacity="0.90" />
-        <circle cx="172" cy="110" r="3.5" fill="#d4a017" opacity="0.78" />
-        <circle cx="140" cy="150" r="3"   fill="#d4a017" opacity="0.70" />
+      {/* ══ HUB Ω ══ */}
+      <motion.g initial={{ opacity:0, scale:0.2 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.85, type:"spring", bounce:0.28 }}>
+        <circle cx="110" cy="96" r="26" fill="url(#omg)" />
+        <circle cx="110" cy="96" r="17" fill="rgba(212,160,23,0.10)" stroke="#d4a017" strokeWidth="1.6" />
+        <text x="110" y="105" textAnchor="middle" fill="#d4a017" fontSize="22" fontFamily="Georgia, serif" fontWeight="bold" filter="url(#fw)">Ω</text>
       </motion.g>
 
-      {/* ── Halo + Ω central ── */}
-      <motion.g initial={{ opacity:0, scale:0.3 }} animate={{ opacity:1, scale:1 }} transition={{ delay:0.88, type:"spring", bounce:0.30 }}>
-        <circle cx="110" cy="97" r="24" fill="rgba(212,160,23,0.13)" stroke="#d4a017" strokeWidth="1.2" />
-        <text x="110" y="107" textAnchor="middle" fill="#d4a017" fontSize="32" fontFamily="Georgia, serif" fontWeight="bold">Ω</text>
-      </motion.g>
-
-      {/* ── Label ── */}
-      <motion.g initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.08, duration:0.4 }}>
-        <text x="110" y="192" textAnchor="middle" fill="#d4a017" fontSize="11.5" fontStyle="italic" fontFamily="Georgia, serif">Mindset &amp; Prérequis</text>
+      {/* ══ LABEL ══ */}
+      <motion.g initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:1.1, duration:0.4 }}>
+        <text x="110" y="192" textAnchor="middle" fill="#d4a017" fontSize="11" fontStyle="italic" fontFamily="Georgia, serif" letterSpacing="0.03em">Mindset &amp; Prérequis</text>
       </motion.g>
     </svg>
   );
