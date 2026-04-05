@@ -205,12 +205,6 @@ export function HeroCartoon() {
         sizes="100vw"
       />
 
-      {/* GRADIENT SOMBRE — garantit le contraste du H1 sur tout fond */}
-      <div
-        className="absolute inset-x-0 top-0 z-[14] pointer-events-none"
-        style={{ height: 'clamp(80px, 18svh, 160px)', background: 'linear-gradient(to bottom, rgba(3,10,28,0.72) 0%, rgba(3,10,28,0.18) 72%, transparent 100%)' }}
-      />
-
       {/* LIGNES DE CONSTELLATIONS */}
       <svg className="absolute inset-0 z-[2] pointer-events-none w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         {GO_EDGES.map(([a, b], idx) => (
@@ -264,7 +258,7 @@ export function HeroCartoon() {
         className="absolute z-20 w-full flex items-center justify-center gap-2 pointer-events-none"
         style={{ top:'clamp(10px, 2%, 22px)' }}>
         <Image src="/chadlogo.jpeg" alt="ChadSciences" width={48} height={48} className="rounded-full object-cover border-2 border-white/50" style={{ width: 'clamp(28px, 3.5vw, 48px)', height: 'clamp(28px, 3.5vw, 48px)' }} />
-        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(16px, 2.8vw, 34px)', color:'rgba(255,255,255,0.95)', textShadow:'0 1px 6px rgba(0,0,0,0.6)' }}>
+        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(16px, 2.8vw, 34px)', color:'#1a3a5c' }}>
           MATHS ULTIME
         </span>
       </motion.div>
