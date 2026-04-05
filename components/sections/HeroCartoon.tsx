@@ -205,6 +205,12 @@ export function HeroCartoon() {
         sizes="100vw"
       />
 
+      {/* GRADIENT SOMBRE — garantit le contraste du H1 sur tout fond */}
+      <div
+        className="absolute inset-x-0 top-0 z-[14] pointer-events-none"
+        style={{ height: 'clamp(80px, 18svh, 160px)', background: 'linear-gradient(to bottom, rgba(3,10,28,0.72) 0%, rgba(3,10,28,0.18) 72%, transparent 100%)' }}
+      />
+
       {/* LIGNES DE CONSTELLATIONS */}
       <svg className="absolute inset-0 z-[2] pointer-events-none w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         {GO_EDGES.map(([a, b], idx) => (
@@ -256,12 +262,35 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.1, duration:0.5 }}
         className="absolute z-20 w-full flex items-center justify-center gap-2 pointer-events-none"
-        style={{ top:'clamp(8px, 2%, 20px)' }}>
-        <Image src="/chadlogo.jpeg" alt="ChadSciences" width={48} height={48} className="rounded-full object-cover border-2 border-white/50" style={{ width: 'clamp(32px, 3.5vw, 52px)', height: 'clamp(32px, 3.5vw, 52px)' }} />
-        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(20px, 2.8vw, 36px)', color:'#1a3a5c' }}>
+        style={{ top:'clamp(10px, 2%, 22px)' }}>
+        <Image src="/chadlogo.jpeg" alt="ChadSciences" width={48} height={48} className="rounded-full object-cover border-2 border-white/50" style={{ width: 'clamp(28px, 3.5vw, 48px)', height: 'clamp(28px, 3.5vw, 48px)' }} />
+        <span className="font-bold tracking-[.18em] uppercase" style={{ fontFamily:'var(--font-space)', fontSize:'clamp(16px, 2.8vw, 34px)', color:'rgba(255,255,255,0.95)', textShadow:'0 1px 6px rgba(0,0,0,0.6)' }}>
           MATHS ULTIME
         </span>
       </motion.div>
+
+      {/* TITRE PRINCIPAL */}
+      <motion.h1
+        initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2, duration:0.8, ease:'easeOut' }}
+        className="absolute z-20 w-full text-center pointer-events-none uppercase px-4"
+        style={{
+          top: 'clamp(46px, 8%, 88px)',
+          fontFamily: 'var(--font-cinzel)',
+          fontWeight: 900,
+          fontSize: 'clamp(20px, 4.5vw, 62px)',
+          letterSpacing: '0.04em',
+          color: '#FFE234',
+          wordBreak: 'break-word',
+          lineHeight: 1.15,
+          textShadow: `
+            0 1px 0 rgba(0,0,0,0.95),
+            0 2px 0 rgba(0,0,0,0.85),
+            0 4px 0 rgba(0,0,0,0.6),
+            0 0 30px rgba(0,0,0,0.7)
+          `
+        }}>
+        PASSE DE 8 À 15/20 EN MATHS
+      </motion.h1>
 
       {/* ── STÈLES SUR NUAGES (Zone Gauche) ── */}
       <div className="absolute z-30 hidden 2xl:block" style={{ left: 'max(24px, calc(50vw - 660px))', top: 'clamp(300px, 36%, 430px)' }}>
@@ -272,13 +301,13 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
         className="absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-4"
-        style={{ top:'clamp(170px, 32%, 300px)' }}>
+        style={{ top:'clamp(130px, 28%, 300px)' }}>
 
-        {/* Espace VSL (desktop uniquement) */}
+        {/* Espace VSL (desktop uniquement — sm:) */}
         <div className="hidden sm:block" style={{ width:'clamp(320px, 58vw, 700px)', aspectRatio:'16/9' }} />
 
-        {/* VSL mobile — dans le flux */}
-        <div className="sm:hidden w-full overflow-hidden rounded-xl" style={{ aspectRatio:'16/9', maxWidth: 380, marginTop: 4 }}>
+        {/* VSL mobile — dans le flux, taille réduite pour tout faire tenir */}
+        <div className="sm:hidden w-full overflow-hidden rounded-xl" style={{ aspectRatio:'16/9', maxWidth: 'min(100%, 360px)', marginTop: 2 }}>
           <iframe
             className="w-full h-full"
             src={`${getEmbed(offerConfig.vslUrl)}?autoplay=1`}
@@ -289,28 +318,7 @@ export function HeroCartoon() {
           />
         </div>
 
-        {/* H1 — ancré avec le CTA, toujours visible au scroll */}
-        <motion.h1
-          initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
-          transition={{ delay:0.35, duration:0.6, ease:'easeOut' }}
-          className="w-full text-center pointer-events-none uppercase px-2 mt-2 mb-0"
-          style={{
-            fontFamily: 'var(--font-cinzel)',
-            fontWeight: 900,
-            fontSize: 'clamp(16px, 3.2vw, 52px)',
-            letterSpacing: '0.05em',
-            color: '#FFE234',
-            wordBreak: 'break-word',
-            textShadow: `
-              1px 1px 0 rgba(0,0,0,0.9),
-              2px 2px 0 rgba(0,0,0,0.7),
-              0 4px 16px rgba(0,0,0,0.6)
-            `
-          }}>
-          PASSE DE 8 À 15/20 EN MATHS
-        </motion.h1>
-
-        <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop:'clamp(0px, 0vh, 80px)' }}>
+        <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop: 0 }}>
           <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-2">
             <CountdownMarble />
           </motion.div>
@@ -335,7 +343,7 @@ export function HeroCartoon() {
         initial={{ opacity:0, x:80 }} animate={{ opacity:1, x:0 }} transition={{ delay:0.4, duration:0.85, type:'spring', stiffness:60 }}
         className="absolute z-30 hidden md:block pointer-events-none"
         style={{ right:'0', bottom:0, width:'clamp(280px, 36vw, 520px)', height:'clamp(480px, 92vh, 820px)' }}>
-        <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} sizes="(max-width: 1200px) 36vw, 520px" priority />
+        <Image src="/zeuf.png" alt="Zeus chibi" fill className="object-contain object-bottom" quality={100} unoptimized sizes="(max-width: 768px) 0px, (max-width: 1440px) 36vw, 520px" priority />
       </motion.div>
 
       <div className="absolute bottom-0 left-0 right-0 z-[25] h-[6%] pointer-events-none" style={{ background:'linear-gradient(to top,#FDFBF7,transparent)' }} />
