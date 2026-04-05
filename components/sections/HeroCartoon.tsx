@@ -176,7 +176,7 @@ function CountdownMarble() {
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
   return (
-    <section className="relative w-full overflow-x-clip" style={{ height:'100svh', minHeight:600, maxHeight:'100svh' }}>
+    <section className="relative w-full overflow-x-clip" style={{ height:'100svh', minHeight:'min(600px, 100svh)', maxHeight:'100svh' }}>
 
       {/* VSL (Background Auto-play) — desktop uniquement */}
       <div
@@ -263,27 +263,6 @@ export function HeroCartoon() {
         </span>
       </motion.div>
 
-      {/* TITRE PRINCIPAL - Style Blanc Pur */}
-      <motion.h1
-        initial={{ opacity:0, y:15 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.2, duration:0.8, ease: "easeOut" }}
-        className="absolute z-20 w-full text-center pointer-events-none uppercase px-3"
-        style={{
-          top:'clamp(55px, 7%, 85px)',
-          fontFamily:'var(--font-cinzel)',
-          fontWeight: 900,
-          fontSize:'clamp(18px, 4vw, 62px)',
-          letterSpacing: '0.05em',
-          color: '#FFE234',
-          wordBreak: 'break-word',
-          textShadow: `
-            1px 1px 0px #a07800,
-            2px 2px 0px #7a5800,
-            3px 3px 0px #4d3500,
-            0 8px 24px rgba(0,0,0,0.3)
-          `
-        }}>
-        PASSE DE 8 À 15/20 EN MATHS
-      </motion.h1>
       {/* ── STÈLES SUR NUAGES (Zone Gauche) ── */}
       <div className="absolute z-30 hidden 2xl:block" style={{ left: 'max(24px, calc(50vw - 660px))', top: 'clamp(300px, 36%, 430px)' }}>
         <LeftStelesStack />
@@ -309,6 +288,27 @@ export function HeroCartoon() {
             allowFullScreen
           />
         </div>
+
+        {/* H1 — ancré avec le CTA, toujours visible au scroll */}
+        <motion.h1
+          initial={{ opacity:0, y:10 }} animate={{ opacity:1, y:0 }}
+          transition={{ delay:0.35, duration:0.6, ease:'easeOut' }}
+          className="w-full text-center pointer-events-none uppercase px-2 mt-2 mb-0"
+          style={{
+            fontFamily: 'var(--font-cinzel)',
+            fontWeight: 900,
+            fontSize: 'clamp(16px, 3.2vw, 52px)',
+            letterSpacing: '0.05em',
+            color: '#FFE234',
+            wordBreak: 'break-word',
+            textShadow: `
+              1px 1px 0 rgba(0,0,0,0.9),
+              2px 2px 0 rgba(0,0,0,0.7),
+              0 4px 16px rgba(0,0,0,0.6)
+            `
+          }}>
+          PASSE DE 8 À 15/20 EN MATHS
+        </motion.h1>
 
         <div className="pointer-events-auto flex flex-col items-center w-full" style={{ marginTop:'clamp(0px, 0vh, 80px)' }}>
           <motion.div initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.4 }} className="mt-2">
