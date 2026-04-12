@@ -1,0 +1,22 @@
+# ── Dossiers lourds inutiles pour Claude ──────────────────
+node_modules/
+.next/
+.turbo/
+dist/
+out/
+build/
+
+# ── Fichiers de lock (énormes, inutiles) ──────────────────
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# ── Cache & logs ──────────────────────────────────────────
+.cache/
+*.log
+npm-debug.log*
+
+# ── Fichiers auto-générés ─────────────────────────────────
+next-env.d.ts
+tsconfig.tsbuildinfo

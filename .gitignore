@@ -1,0 +1,85 @@
+node_modules/
+.next/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+# Dépendances et builds
+node_modules/
+.next/
+out/
+build/
+
+# Fichiers de lock et logs (Gros consommateurs de tokens)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+*.log
+tsbuildinfo
+*.tsbuildinfo
+
+# Assets (Images, polices, SVGs lourds) — sauf ceux du dossier public/
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+!public/*.png
+!public/*.jpg
+!public/*.jpeg
+!public/*.gif
+!public/*.ico
+!public/*.svg
+!public/*.webp
+
+# Fichiers de doc non essentiels au code pur
+CHANGELOG.md
+HANDOFF.md
+RECETTE.md
+package-lock
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Environment
+.env
+backend/.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Claude settings
+.claude/
+*.local.json
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.astro/
+
+# Firebase
+frontend/.firebase/
+
+# Frontend logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Google Cloud credentials
+**/service-account-key.json
+**/*-service-account-key.json
+
+# Terraform
+*.tfvars
+.terraform/
+.terraform.lock.hcl
