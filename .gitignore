@@ -33,6 +33,13 @@ tsbuildinfo
 !public/*.ico
 !public/*.svg
 !public/*.webp
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.gif
+!public/**/*.ico
+!public/**/*.svg
+!public/**/*.webp
 
 # Fichiers de doc non essentiels au code pur
 CHANGELOG.md
