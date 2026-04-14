@@ -202,6 +202,19 @@ body {
 
 /* .vsl-frame — position gérée par JS dans HeroCartoon.tsx (calcul pixel exact) */
 
+/* Fullscreen VSL — override le positionnement du temple */
+.vsl-container:fullscreen,
+.vsl-container:-webkit-full-screen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  transform: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+}
+
 .hero-headline-top {
   top: 7svh;
 }

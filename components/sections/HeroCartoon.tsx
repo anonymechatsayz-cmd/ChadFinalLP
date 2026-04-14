@@ -192,18 +192,178 @@ export function HeroCartoon() {
   // On calcule la position en pixels réels → fiable sur toutes les résolutions.
   const [vslStyle, setVslStyle] = useState<React.CSSProperties>({});
   const [isLandscape, setIsLandscape] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [isMuted, setIsMuted]     = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration]   = useState(0);
+  const [showControls, setShowControls] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const iframeRef    = useRef<HTMLIFrameElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playerRef    = useRef<any>(null);
+  const pollRef      = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isSeekingRef = useRef(false);          // ref → pas de closure stale
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentTimeRef = useRef(0);            // ref pour accès dans drag handlers
+  const barRef       = useRef<HTMLDivElement>(null);
+
+  // ── YouTube IFrame API ────────────────────────────────────────────────────
+  useEffect(() => {
+    if ((window as any).YT?.Player) return;
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  }, []);
+
+  useEffect(() => {
+    const startPoll = () => {
+      if (pollRef.current) clearInterval(pollRef.current);   // jamais de fuite
+      pollRef.current = setInterval(() => {
+        if (!isSeekingRef.current && playerRef.current?.getCurrentTime) {
+          const t = playerRef.current.getCurrentTime();
+          currentTimeRef.current = t;
+          setCurrentTime(t);
+        }
+      }, 250);
+    };
+
+    const init = () => {
+      if (!iframeRef.current || playerRef.current) return;
+      playerRef.current = new (window as any).YT.Player(iframeRef.current, {
+        events: {
+          onReady: (e: any) => {
+            const d = e.target.getDuration();
+            if (d > 0) setDuration(d);
+          },
+          onStateChange: (e: any) => {
+            const YT = (window as any).YT;
+            const playing = e.data === YT.PlayerState.PLAYING;
+            setIsPlaying(playing);
+            if (playing) {
+              const d = e.target.getDuration();
+              if (d > 0) setDuration(d);
+              startPoll();
+            } else {
+              if (pollRef.current) clearInterval(pollRef.current);
+            }
+          },
+        },
+      });
+    };
+
+    if ((window as any).YT?.Player) { init(); }
+    else { (window as any).onYouTubeIframeAPIReady = init; }
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, []);
+
+  // ── Contrôles ─────────────────────────────────────────────────────────────
+  const togglePlay = () => {
+    if (!playerRef.current) return;
+    if (isPlaying) { playerRef.current.pauseVideo?.(); }
+    else           { playerRef.current.playVideo?.();  }
+  };
 
   const toggleSound = () => {
-    const w = iframeRef.current?.contentWindow;
-    if (!w) return;
-    w.postMessage(
-      JSON.stringify({ event: 'command', func: isMuted ? 'unMute' : 'mute', args: [] }),
-      '*'
-    );
+    if (!playerRef.current) return;
+    if (isMuted) { playerRef.current.unMute?.(); }
+    else         { playerRef.current.mute?.();   }
     setIsMuted(m => !m);
   };
+
+  const seekToRatio = (ratio: number) => {
+    if (!duration) return;
+    const t = Math.max(0, Math.min(1, ratio)) * duration;
+    currentTimeRef.current = t;
+    setCurrentTime(t);
+    playerRef.current?.seekTo?.(t, true);
+  };
+
+  const getRatioFromEvent = (e: MouseEvent | React.MouseEvent | TouchEvent | React.TouchEvent) => {
+    const bar = barRef.current;
+    if (!bar) return 0;
+    const rect = bar.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0]?.clientX ?? (e as TouchEvent).changedTouches[0]?.clientX : (e as MouseEvent).clientX;
+    return (clientX - rect.left) / rect.width;
+  };
+
+  // Drag seekbar
+  const handleBarMouseDown = (e: React.MouseEvent) => {
+    isSeekingRef.current = true;
+    seekToRatio(getRatioFromEvent(e));
+
+    const onMove = (ev: MouseEvent) => seekToRatio(getRatioFromEvent(ev));
+    const onUp   = (ev: MouseEvent) => {
+      seekToRatio(getRatioFromEvent(ev));
+      isSeekingRef.current = false;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup',   onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup',   onUp);
+  };
+
+  const handleBarTouchStart = (e: React.TouchEvent) => {
+    isSeekingRef.current = true;
+    seekToRatio(getRatioFromEvent(e));
+
+    const onMove = (ev: TouchEvent) => seekToRatio(getRatioFromEvent(ev));
+    const onEnd  = (ev: TouchEvent) => {
+      seekToRatio(getRatioFromEvent(ev));
+      isSeekingRef.current = false;
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend',  onEnd);
+    };
+    window.addEventListener('touchmove', onMove);
+    window.addEventListener('touchend',  onEnd);
+  };
+
+  // ── Auto-hide contrôles ───────────────────────────────────────────────────
+  const revealControls = () => {
+    setShowControls(true);
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    hideTimerRef.current = setTimeout(() => {
+      if (isPlaying) setShowControls(false);
+    }, 3000);
+  };
+  const hideControls = () => {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    if (isPlaying) setShowControls(false);
+  };
+  // Touch : un tap révèle les contrôles (mobile)
+  const handleContainerTouch = () => revealControls();
+
+
+  // ── Fullscreen — on fullscreen la PAGE entière, pas le container ────────
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!(document.fullscreenElement || (document as any).webkitFullscreenElement));
+    document.addEventListener('fullscreenchange', onChange);
+    document.addEventListener('webkitfullscreenchange', onChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange);
+      document.removeEventListener('webkitfullscreenchange', onChange);
+    };
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      // iOS Safari ne supporte pas requestFullscreen sur document — fallback sur le container
+      const el = document.documentElement as any;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen;
+      req?.call(el);
+    } else {
+      const doc = document as any;
+      const exit = doc.exitFullscreen || doc.webkitExitFullscreen;
+      exit?.call(doc);
+    }
+  };
+
+  const fmtTime = (s: number) => {
+    const m = Math.floor(s / 60);
+    return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
+  };
+
+  const pct = duration ? (currentTime / duration) * 100 : 0;
 
   useEffect(() => {
     const checkLandscape = () => setIsLandscape(window.innerHeight < 500 && window.innerWidth >= 640);
@@ -262,12 +422,24 @@ export function HeroCartoon() {
     <section className="relative w-full overflow-x-clip" style={{ minHeight:'min(760px, 100svh)', height:'100svh' }}>
 
       <div
-        className="absolute z-[2] left-1/2 -translate-x-1/2 overflow-hidden pointer-events-auto"
-        style={{
+        ref={containerRef}
+        className="overflow-hidden pointer-events-auto vsl-container"
+        style={isFullscreen ? {
+          position: 'fixed', inset: 0, zIndex: 9999,
+          width: '100vw', height: '100vh',
+          background: '#000',
+        } : {
+          position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 2,
           ...vslStyle,
           opacity: vslStyle.top !== undefined ? 1 : 0,
           transition: 'opacity 0.55s ease 0.65s',
-        }}>
+        }}
+        onMouseEnter={revealControls}
+        onMouseMove={revealControls}
+        onMouseLeave={hideControls}
+        onTouchStart={handleContainerTouch}
+      >
         <iframe
           ref={iframeRef}
           className="w-full h-full"
@@ -277,38 +449,138 @@ export function HeroCartoon() {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
-        {/* Barre de contrôles custom — centrée en bas de la vidéo */}
+
+        {/* Bloqueur — transparent en lecture, masque l'overlay YouTube en pause */}
+        <div
+          onClick={togglePlay}
+          style={{
+            position: 'absolute', inset: 0, zIndex: 8, pointerEvents: 'auto',
+            background: isPlaying ? 'transparent' : 'rgba(0,0,0,0.55)',
+            transition: 'background 0.25s ease',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+        >
+          {!isPlaying && (
+            <div style={{
+              width: 56, height: 56, borderRadius: '50%',
+              background: 'rgba(236,100,38,0.92)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              transition: 'transform 0.15s ease',
+            }}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8V4z"/></svg>
+            </div>
+          )}
+        </div>
+
+        {/* ── Barre de contrôles custom ── */}
         <div style={{
-          position: 'absolute', bottom: 10, left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex', alignItems: 'center', gap: 8,
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          padding: '10px 12px 10px',
+          background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
+          display: 'flex', flexDirection: 'column', gap: 8,
           zIndex: 10, pointerEvents: 'auto',
+          opacity: showControls || !isPlaying ? 1 : 0,
+          transition: 'opacity 0.35s ease',
         }}>
-          <button onClick={toggleSound} style={{
-            background: 'rgba(0,0,0,0.72)', color: '#fff',
-            border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 8,
-            padding: '6px 14px', fontSize: 12, fontWeight: 700,
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-            backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
-            whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
-            opacity: isMuted ? 1 : 0.6,
-          }}>
-            {isMuted ? '🔇 Activer le son' : '🔊 Son activé'}
-          </button>
-          <button onClick={() => iframeRef.current?.requestFullscreen()} aria-label="Plein écran" style={{
-            background: 'rgba(0,0,0,0.72)', color: '#fff',
-            border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 8,
-            padding: '6px 12px', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 5,
-            backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
-            fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
-          }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
-              <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
-            </svg>
-            Plein écran
-          </button>
+
+          {/* Ligne 1 : play/pause + seekbar + temps */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+
+            {/* Bouton play/pause — target 44px min pour touch */}
+            <button onClick={togglePlay} style={{
+              background: 'none', border: 'none',
+              padding: '6px', margin: '-6px',
+              cursor: 'pointer', color: '#fff', flexShrink: 0, lineHeight: 0,
+              filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))',
+              minWidth: 44, minHeight: 44,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {isPlaying
+                ? <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>
+                : <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8V4z"/></svg>
+              }
+            </button>
+
+            {/* Seekbar custom */}
+            <div
+              ref={barRef}
+              onMouseDown={handleBarMouseDown}
+              onTouchStart={handleBarTouchStart}
+              style={{
+                flex: 1, height: 20, display: 'flex', alignItems: 'center',
+                cursor: 'pointer', position: 'relative',
+              }}
+            >
+              {/* Piste de fond */}
+              <div style={{
+                position: 'absolute', left: 0, right: 0,
+                height: 4, borderRadius: 9999,
+                background: 'rgba(255,255,255,0.25)',
+                overflow: 'hidden',
+              }}>
+                {/* Progression */}
+                <div style={{
+                  position: 'absolute', left: 0, top: 0, bottom: 0,
+                  width: `${pct}%`,
+                  background: '#EC6426',
+                  borderRadius: 9999,
+                  transition: isSeekingRef.current ? 'none' : 'width 0.25s linear',
+                }} />
+              </div>
+              {/* Thumb — 12px, zone de touch large via height: 20px sur le parent */}
+              <div style={{
+                position: 'absolute',
+                left: `calc(${pct}% - 6px)`,
+                width: 12, height: 12,
+                borderRadius: '50%',
+                background: '#EC6426',
+                boxShadow: '0 0 4px rgba(0,0,0,0.5)',
+                transition: isSeekingRef.current ? 'none' : 'left 0.25s linear',
+                pointerEvents: 'none',
+              }} />
+            </div>
+
+            {/* Temps */}
+            <span style={{
+              color: 'rgba(255,255,255,0.9)', fontSize: 11,
+              fontFamily: 'var(--font-baloo)', fontWeight: 600,
+              whiteSpace: 'nowrap', flexShrink: 0,
+              textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+            }}>
+              {fmtTime(currentTime)} / {fmtTime(duration)}
+            </span>
+          </div>
+
+          {/* Ligne 2 : boutons son + plein écran */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            {isMuted && (
+              <button onClick={toggleSound} style={{
+                background: 'rgba(0,0,0,0.65)', color: '#fff',
+                border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
+                padding: '4px 12px', fontSize: 12, fontWeight: 700,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
+                backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+                whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
+              }}>
+                🔇 Activer le son
+              </button>
+            )}
+            <button onClick={toggleFullscreen} aria-label="Plein écran" style={{
+              background: 'rgba(0,0,0,0.65)', color: '#fff',
+              border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
+              padding: '4px 10px', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: 5,
+              backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+              fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
+            }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+              </svg>
+              Plein écran
+            </button>
+          </div>
         </div>
       </div>
 
