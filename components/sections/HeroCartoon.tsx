@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import Image from 'next/image';
 import { motion } from 'motion/react';
@@ -183,7 +183,7 @@ function CountdownMarble() {
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
   // embedUrl défini une fois — une seule iframe dans le DOM (pas de double audio)
-  const embedUrl = `${getEmbed(offerConfig.vslUrl)}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&vq=hd1080`;
+  const embedUrl = `${getEmbed(offerConfig.vslUrl)}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&enablejsapi=1&vq=hd1080`;
 
   // ── Positionnement JS de la VSL ────────────────────────────────────────────
   // Le PNG (4000×2233, ratio 1.791) est en object-cover sur la section (100svh).
@@ -192,6 +192,18 @@ export function HeroCartoon() {
   // On calcule la position en pixels réels → fiable sur toutes les résolutions.
   const [vslStyle, setVslStyle] = useState<React.CSSProperties>({});
   const [isLandscape, setIsLandscape] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const toggleSound = () => {
+    const w = iframeRef.current?.contentWindow;
+    if (!w) return;
+    w.postMessage(
+      JSON.stringify({ event: 'command', func: isMuted ? 'unMute' : 'mute', args: [] }),
+      '*'
+    );
+    setIsMuted(m => !m);
+  };
 
   useEffect(() => {
     const checkLandscape = () => setIsLandscape(window.innerHeight < 500 && window.innerWidth >= 640);
@@ -202,10 +214,10 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const IMG_RATIO  = 4000 / 2233;  // 1.7912… ratio du PNG
-    const ZONE_TOP   = 850  / 2233;  // 38.07% depuis le haut de l'image
-    const ZONE_H     = 580  / 2233;  // 25.97% de la hauteur image
-    const ZONE_W     = 1120 / 4000;  // 28%    de la largeur  image
-    const OVERFLOW   = 0.12;         // 12% de marge → bords cachés par les colonnes
+    // Dimensions réelles de la zone transparente du temple dans le PNG
+    const ZONE_TOP_PX = 850  / 2233;   // top   (fraction de hauteur PNG)
+    const ZONE_H_PX   = 580  / 2233;   // hauteur (fraction)
+    const ZONE_W_PX   = 1120 / 4000;   // largeur (fraction)
 
     const compute = () => {
       const svh = window.innerHeight;
@@ -215,28 +227,29 @@ export function HeroCartoon() {
       let imgH: number, imgW: number, imgTop: number;
 
       if (vpRatio >= IMG_RATIO) {
-        // Ultra-wide : l'image scale par la largeur
         imgW   = vw;
         imgH   = vw / IMG_RATIO;
-        // object-center vertical : l'image déborde en haut/bas, centrée
-        imgTop = (svh - imgH) / 2; // négatif si imgH > svh
+        imgTop = (svh - imgH) / 2;
       } else {
-        // Portrait / 16:9 / 16:10 : l'image scale par la hauteur
         imgH   = svh;
-        imgW   = svh * IMG_RATIO; // déborde sur les côtés (centré H)
-        imgTop = 0; // pas de décalage vertical (object-top ou image == svh)
+        imgW   = svh * IMG_RATIO;
+        imgTop = 0;
       }
 
-      // Zone transparente en pixels viewport
-      const zoneTop = imgTop + ZONE_TOP * imgH;
-      const zoneH   = ZONE_H * imgH;
-      const zoneW   = ZONE_W * imgW;
+      // ── SIZING WIDTH-FIRST ───────────────────────────────────────────────────
+      // La vidéo occupe toute la largeur de la zone du temple.
+      // La zone fait ratio 1.93, le 16:9 fait 1.78 → la hauteur dépasse de ~8.5%,
+      // les bords haut/bas sont couverts par le cadre du temple (rognage minimal, acceptable).
+      const zoneW = ZONE_W_PX * imgW * 1.08; // +8% pour remplir la zone
+      const zoneH = zoneW * (9 / 16);
 
-      // VSL avec overflow pour masquer les bords noirs
+      // Centre vertical ancré sur le centre réel de la zone transparente
+      const zoneCenter = imgTop + ZONE_TOP_PX * imgH + (ZONE_H_PX * imgH) / 2;
+
       setVslStyle({
-        top:    zoneTop - zoneH * OVERFLOW,
-        height: zoneH   * (1 + 2 * OVERFLOW),
-        width:  zoneW   * (1 + 2 * OVERFLOW),
+        top:    zoneCenter - zoneH / 2,
+        height: zoneH,
+        width:  zoneW,
       });
     };
 
@@ -256,6 +269,7 @@ export function HeroCartoon() {
           transition: 'opacity 0.55s ease 0.65s',
         }}>
         <iframe
+          ref={iframeRef}
           className="w-full h-full"
           src={embedUrl}
           title="VSL"
@@ -263,6 +277,39 @@ export function HeroCartoon() {
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
         />
+        {/* Barre de contrôles custom — centrée en bas de la vidéo */}
+        <div style={{
+          position: 'absolute', bottom: 10, left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex', alignItems: 'center', gap: 8,
+          zIndex: 10, pointerEvents: 'auto',
+        }}>
+          <button onClick={toggleSound} style={{
+            background: 'rgba(0,0,0,0.72)', color: '#fff',
+            border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 8,
+            padding: '6px 14px', fontSize: 12, fontWeight: 700,
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
+            backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+            whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
+            opacity: isMuted ? 1 : 0.6,
+          }}>
+            {isMuted ? '🔇 Activer le son' : '🔊 Son activé'}
+          </button>
+          <button onClick={() => iframeRef.current?.requestFullscreen()} aria-label="Plein écran" style={{
+            background: 'rgba(0,0,0,0.72)', color: '#fff',
+            border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 8,
+            padding: '6px 12px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 5,
+            backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+            fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
+          }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+              <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+            </svg>
+            Plein écran
+          </button>
+        </div>
       </div>
 
       {/* BACKGROUND IMAGE */}
