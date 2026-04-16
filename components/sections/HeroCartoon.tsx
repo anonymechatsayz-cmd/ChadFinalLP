@@ -183,7 +183,7 @@ function CountdownMarble() {
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
   // embedUrl défini une fois — une seule iframe dans le DOM (pas de double audio)
-  const embedUrl = `${getEmbed(offerConfig.vslUrl)}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&enablejsapi=1&vq=hd1080`;
+  const embedUrl = `${getEmbed(offerConfig.vslUrl)}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&enablejsapi=1&playsinline=1`;
 
   // ── Positionnement JS de la VSL ────────────────────────────────────────────
   // Le PNG (4000×2233, ratio 1.791) est en object-cover sur la section (100svh).
@@ -198,13 +198,18 @@ export function HeroCartoon() {
   const [duration, setDuration]   = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isReady, setIsReady]       = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [isSeeking, setIsSeeking]   = useState(false);
 
   const iframeRef    = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef    = useRef<any>(null);
-  const pollRef      = useRef<ReturnType<typeof setInterval> | null>(null);
+  const rafRef       = useRef<number | null>(null);
   const isSeekingRef = useRef(false);          // ref → pas de closure stale
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentTimeRef = useRef(0);            // ref pour accès dans drag handlers
   const barRef       = useRef<HTMLDivElement>(null);
 
@@ -218,14 +223,19 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const startPoll = () => {
-      if (pollRef.current) clearInterval(pollRef.current);   // jamais de fuite
-      pollRef.current = setInterval(() => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      const loop = () => {
         if (!isSeekingRef.current && playerRef.current?.getCurrentTime) {
           const t = playerRef.current.getCurrentTime();
           currentTimeRef.current = t;
           setCurrentTime(t);
         }
-      }, 250);
+        rafRef.current = requestAnimationFrame(loop);
+      };
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    const stopPoll = () => {
+      if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
     };
 
     const init = () => {
@@ -235,17 +245,28 @@ export function HeroCartoon() {
           onReady: (e: any) => {
             const d = e.target.getDuration();
             if (d > 0) setDuration(d);
+            setIsReady(true);
           },
           onStateChange: (e: any) => {
-            const YT = (window as any).YT;
-            const playing = e.data === YT.PlayerState.PLAYING;
-            setIsPlaying(playing);
+            const YT   = (window as any).YT;
+            const st   = e.data;
+            const playing   = st === YT.PlayerState.PLAYING;
+            const buffering = st === YT.PlayerState.BUFFERING;
+            const paused    = st === YT.PlayerState.PAUSED;
+            setIsBuffering(buffering);
+            if (playing || paused) setIsPlaying(playing);
+            if (paused) {
+              if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+              transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 50);
+            }
             if (playing) {
               const d = e.target.getDuration();
               if (d > 0) setDuration(d);
+              if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+              transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 350);
               startPoll();
-            } else {
-              if (pollRef.current) clearInterval(pollRef.current);
+            } else if (!buffering) {
+              stopPoll();
             }
           },
         },
@@ -254,14 +275,24 @@ export function HeroCartoon() {
 
     if ((window as any).YT?.Player) { init(); }
     else { (window as any).onYouTubeIframeAPIReady = init; }
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
   }, []);
 
   // ── Contrôles ─────────────────────────────────────────────────────────────
   const togglePlay = () => {
     if (!playerRef.current) return;
-    if (isPlaying) { playerRef.current.pauseVideo?.(); }
-    else           { playerRef.current.playVideo?.();  }
+    setIsPlaying(p => !p);  // optimiste — onStateChange corrige si besoin
+    setIsTransitioning(true);
+    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    if (isPlaying) {
+      playerRef.current.pauseVideo?.();
+    } else {
+      playerRef.current.playVideo?.();
+    }
   };
 
   const toggleSound = () => {
@@ -290,12 +321,14 @@ export function HeroCartoon() {
   // Drag seekbar
   const handleBarMouseDown = (e: React.MouseEvent) => {
     isSeekingRef.current = true;
+    setIsSeeking(true);
     seekToRatio(getRatioFromEvent(e));
 
     const onMove = (ev: MouseEvent) => seekToRatio(getRatioFromEvent(ev));
     const onUp   = (ev: MouseEvent) => {
       seekToRatio(getRatioFromEvent(ev));
       isSeekingRef.current = false;
+      setIsSeeking(false);
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mouseup',   onUp);
     };
@@ -305,12 +338,14 @@ export function HeroCartoon() {
 
   const handleBarTouchStart = (e: React.TouchEvent) => {
     isSeekingRef.current = true;
+    setIsSeeking(true);
     seekToRatio(getRatioFromEvent(e));
 
     const onMove = (ev: TouchEvent) => seekToRatio(getRatioFromEvent(ev));
     const onEnd  = (ev: TouchEvent) => {
       seekToRatio(getRatioFromEvent(ev));
       isSeekingRef.current = false;
+      setIsSeeking(false);
       window.removeEventListener('touchmove', onMove);
       window.removeEventListener('touchend',  onEnd);
     };
@@ -323,7 +358,8 @@ export function HeroCartoon() {
     setShowControls(true);
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     hideTimerRef.current = setTimeout(() => {
-      if (isPlaying) setShowControls(false);
+      // Lire l'état en temps réel via l'API YT (évite la closure stale sur isPlaying)
+      if (playerRef.current?.getPlayerState?.() === 1) setShowControls(false);
     }, 3000);
   };
   const hideControls = () => {
@@ -396,15 +432,21 @@ export function HeroCartoon() {
         imgTop = 0;
       }
 
-      // ── SIZING WIDTH-FIRST ───────────────────────────────────────────────────
-      // La vidéo occupe toute la largeur de la zone du temple.
-      // La zone fait ratio 1.93, le 16:9 fait 1.78 → la hauteur dépasse de ~8.5%,
-      // les bords haut/bas sont couverts par le cadre du temple (rognage minimal, acceptable).
-      const zoneW = ZONE_W_PX * imgW * 1.08; // +8% pour remplir la zone
-      const zoneH = zoneW * (9 / 16);
+      // ── SIZING HEIGHT-FIRST + SCALE ─────────────────────────────────────────
+      // Le PNG a scale(1.20) CSS avec transformOrigin: '50% T_FRAC%'.
+      // La zone transparente visuelle = T + (centerLayout - T) × SCALE.
+      // T_FRAC = 0.44 → descend très légèrement par rapport à l'original (≈ +12px).
+      const SCALE  = 1.20;
+      const T_FRAC = 0.44; // doit correspondre exactement au CSS transformOrigin Y
+      const T = T_FRAC * svh;
 
-      // Centre vertical ancré sur le centre réel de la zone transparente
-      const zoneCenter = imgTop + ZONE_TOP_PX * imgH + (ZONE_H_PX * imgH) / 2;
+      const zoneCenterLayout = imgTop + ZONE_TOP_PX * imgH + (ZONE_H_PX * imgH) / 2;
+      const zoneCenter = T + (zoneCenterLayout - T) * SCALE;
+
+      // Dimensions agrandies de SCALE (width-first : remplit la zone en largeur,
+      // léger débordement haut/bas ~10px couvert par le cadre opaque du temple)
+      const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
+      const zoneH = zoneW * (9 / 16);
 
       setVslStyle({
         top:    zoneCenter - zoneH / 2,
@@ -450,17 +492,24 @@ export function HeroCartoon() {
           allowFullScreen
         />
 
-        {/* Bloqueur — transparent en lecture, masque l'overlay YouTube en pause */}
+        {/* Bloqueur — transparent en lecture, masque l'overlay YouTube en pause/chargement */}
         <div
           onClick={togglePlay}
           style={{
             position: 'absolute', inset: 0, zIndex: 8, pointerEvents: 'auto',
-            background: isPlaying ? 'transparent' : 'rgba(0,0,0,0.55)',
-            transition: 'background 0.25s ease',
+            background: (isTransitioning || !isReady)
+              ? 'rgba(0,0,0,1)'
+              : isPlaying
+                ? 'transparent'
+                : 'rgba(0,0,0,0.6)',
+            // Entrée dans le noir : instantanée (pas de transition = flash masqué immédiatement)
+            // Sortie du noir : smooth fade pour ne pas couper brutalement
+            transition: (isTransitioning || !isReady) ? 'none' : 'background 0.3s ease',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}
         >
-          {!isPlaying && (
+          {/* Bouton play : uniquement quand prêt, en pause, hors transition et hors buffering */}
+          {isReady && !isPlaying && !isTransitioning && !isBuffering && (
             <div style={{
               width: 56, height: 56, borderRadius: '50%',
               background: 'rgba(236,100,38,0.92)',
@@ -480,7 +529,7 @@ export function HeroCartoon() {
           background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
           display: 'flex', flexDirection: 'column', gap: 8,
           zIndex: 10, pointerEvents: 'auto',
-          opacity: showControls || !isPlaying ? 1 : 0,
+          opacity: showControls ? 1 : 0,
           transition: 'opacity 0.35s ease',
         }}>
 
@@ -525,7 +574,7 @@ export function HeroCartoon() {
                   width: `${pct}%`,
                   background: '#EC6426',
                   borderRadius: 9999,
-                  transition: isSeekingRef.current ? 'none' : 'width 0.25s linear',
+                  transition: isSeeking ? 'none' : 'width 0.25s linear',
                 }} />
               </div>
               {/* Thumb — 12px, zone de touch large via height: 20px sur le parent */}
@@ -536,7 +585,7 @@ export function HeroCartoon() {
                 borderRadius: '50%',
                 background: '#EC6426',
                 boxShadow: '0 0 4px rgba(0,0,0,0.5)',
-                transition: isSeekingRef.current ? 'none' : 'left 0.25s linear',
+                transition: isSeeking ? 'none' : 'left 0.25s linear',
                 pointerEvents: 'none',
               }} />
             </div>
@@ -548,39 +597,44 @@ export function HeroCartoon() {
               whiteSpace: 'nowrap', flexShrink: 0,
               textShadow: '0 1px 3px rgba(0,0,0,0.6)',
             }}>
-              {fmtTime(currentTime)} / {fmtTime(duration)}
+              {duration > 0 ? `${fmtTime(currentTime)} / ${fmtTime(duration)}` : '--:-- / --:--'}
             </span>
           </div>
 
-          {/* Ligne 2 : boutons son + plein écran */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
-            {isMuted && (
-              <button onClick={toggleSound} style={{
-                background: 'rgba(0,0,0,0.65)', color: '#fff',
-                border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
-                padding: '4px 12px', fontSize: 12, fontWeight: 700,
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-                backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-                whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
-              }}>
-                🔇 Activer le son
-              </button>
-            )}
-            <button onClick={toggleFullscreen} aria-label="Plein écran" style={{
+        </div>
+
+        {/* ── Boutons persistants : son + plein écran — toujours visibles ── */}
+        <div style={{
+          position: 'absolute', bottom: 48, left: 0, right: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+          zIndex: 11, pointerEvents: 'auto',
+        }}>
+          {isMuted && (
+            <button onClick={toggleSound} style={{
               background: 'rgba(0,0,0,0.65)', color: '#fff',
               border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
-              padding: '4px 10px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '4px 12px', fontSize: 12, fontWeight: 700,
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
               backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-              fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
+              whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
             }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
-                <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
-              </svg>
-              Plein écran
+              🔇 Activer le son
             </button>
-          </div>
+          )}
+          <button onClick={toggleFullscreen} aria-label="Plein écran" style={{
+            background: 'rgba(0,0,0,0.65)', color: '#fff',
+            border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
+            padding: '4px 10px', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 5,
+            backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
+            fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
+          }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+              <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+            </svg>
+            Plein écran
+          </button>
         </div>
       </div>
 
@@ -594,6 +648,7 @@ export function HeroCartoon() {
           alt=""
           fill
           className="object-cover object-center object-top sm:object-center"
+          style={{ transform: 'scale(1.20)', transformOrigin: '50% 44%' }}
           priority
           quality={100}
           sizes="100vw"
