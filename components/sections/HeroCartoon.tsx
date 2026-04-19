@@ -245,7 +245,13 @@ export function HeroCartoon() {
           onReady: (e: any) => {
             const d = e.target.getDuration();
             if (d > 0) setDuration(d);
+            setIsTransitioning(false);
             setIsReady(true);
+            const state = e.target.getPlayerState();
+            if (state === 1) {
+              setIsPlaying(true);
+              startPoll();
+            }
           },
           onStateChange: (e: any) => {
             const YT   = (window as any).YT;
@@ -285,9 +291,10 @@ export function HeroCartoon() {
   // ── Contrôles ─────────────────────────────────────────────────────────────
   const togglePlay = () => {
     if (!playerRef.current) return;
-    setIsPlaying(p => !p);  // optimiste — onStateChange corrige si besoin
     setIsTransitioning(true);
     if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
+    // Sécurité : si onStateChange ne répond pas, on sort du noir après 2.5s
+    transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 2500);
     if (isPlaying) {
       playerRef.current.pauseVideo?.();
     } else {
@@ -751,7 +758,9 @@ export function HeroCartoon() {
               '0 0 70px rgba(255,180,0,0.3)',
             ].join(', '),
           }}>
-          PASSE DE 8 A 15/20 EN MATHS AU LYCÉE
+          PASSE DE 8 A 15/20
+          <br className="hidden sm:block md:hidden" />
+          {' '}EN MATHS AU LYCÉE
         </h1>
       </motion.div>
 
@@ -817,7 +826,7 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.4, duration:0.55, type:'spring' }}
         className="sm:hidden absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-5"
-        style={{ top: 'calc(64svh + 12px)' }}>
+        style={{ top: 'calc(70svh + 16px)' }}>
         <CountdownMarble />
         <div className="mt-3 w-full flex justify-center pointer-events-auto">
           <div className="flex flex-col items-center w-full">
