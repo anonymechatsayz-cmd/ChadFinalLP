@@ -18,10 +18,7 @@ const C = {
 };
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-const getEmbed = (url: string) => {
-  const id = url?.match(/[?&]v=([^&]+)/)?.[1] || url?.match(/youtu\.be\/([^?]+)/)?.[1];
-  return id ? `https://www.youtube.com/embed/${id}` : ''; 
-};
+const BUNNY_EMBED_URL = 'https://player.mediadelivery.net/embed/650000/6f52307c-a669-4355-96dd-d69a109b4c84?autoplay=true&loop=false&muted=true&preload=true&responsive=true';
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const SKY_SYMS = [
@@ -248,9 +245,6 @@ function CountdownBadge({ hovered }: { hovered?: boolean }) {
 // HERO CARTOON
 // ════════════════════════════════════════════════════════════════════════════
 export function HeroCartoon() {
-  // embedUrl défini une fois — une seule iframe dans le DOM (pas de double audio)
-  const embedUrl = `${getEmbed(offerConfig.vslUrl)}?autoplay=1&mute=1&controls=0&rel=0&modestbranding=1&enablejsapi=1&playsinline=1`;
-
   // ── Positionnement JS de la VSL ────────────────────────────────────────────
   // Le PNG (4000×2233, ratio 1.791) est en object-cover sur la section (100svh).
   // Zone transparente dans le PNG :
@@ -273,190 +267,29 @@ export function HeroCartoon() {
   const [vslStyle, setVslStyle] = useState<React.CSSProperties>({});
   const [heroHeight, setHeroHeight] = useState<number | null>(null);
   const [isLandscape, setIsLandscape] = useState(false);
-  const [isMuted, setIsMuted]     = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration]   = useState(0);
-  const [showControls, setShowControls] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isReady, setIsReady]       = useState(false);
-  const [isBuffering, setIsBuffering] = useState(false);
-  const [isSeeking, setIsSeeking]   = useState(false);
 
   const iframeRef    = useRef<HTMLIFrameElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef   = useRef<HTMLElement>(null);
-  const playerRef    = useRef<any>(null);
-  const rafRef       = useRef<number | null>(null);
-  const isSeekingRef = useRef(false);          // ref → pas de closure stale
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const currentTimeRef = useRef(0);            // ref pour accès dans drag handlers
-  const barRef       = useRef<HTMLDivElement>(null);
 
-  // ── YouTube IFrame API ────────────────────────────────────────────────────
-  useEffect(() => {
-    if ((window as any).YT?.Player) return;
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(tag);
-  }, []);
-
-  useEffect(() => {
-    const startPoll = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      const loop = () => {
-        if (!isSeekingRef.current && playerRef.current?.getCurrentTime) {
-          const t = playerRef.current.getCurrentTime();
-          currentTimeRef.current = t;
-          setCurrentTime(t);
-        }
-        rafRef.current = requestAnimationFrame(loop);
-      };
-      rafRef.current = requestAnimationFrame(loop);
-    };
-    const stopPoll = () => {
-      if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-    };
-
-    const init = () => {
-      if (!iframeRef.current || playerRef.current) return;
-      playerRef.current = new (window as any).YT.Player(iframeRef.current, {
-        events: {
-          onReady: (e: any) => {
-            const d = e.target.getDuration();
-            if (d > 0) setDuration(d);
-            setIsTransitioning(false);
-            setIsReady(true);
-            const state = e.target.getPlayerState();
-            if (state === 1) {
-              setIsPlaying(true);
-              startPoll();
-            }
-          },
-          onStateChange: (e: any) => {
-            const YT   = (window as any).YT;
-            const st   = e.data;
-            const playing   = st === YT.PlayerState.PLAYING;
-            const buffering = st === YT.PlayerState.BUFFERING;
-            const paused    = st === YT.PlayerState.PAUSED;
-            setIsBuffering(buffering);
-            if (playing || paused) setIsPlaying(playing);
-            if (paused) {
-              if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-              transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 50);
-            }
-            if (playing) {
-              const d = e.target.getDuration();
-              if (d > 0) setDuration(d);
-              if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-              transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 350);
-              startPoll();
-            } else if (!buffering) {
-              stopPoll();
-            }
-          },
-        },
-      });
-    };
-
-    if ((window as any).YT?.Player) { init(); }
-    else { (window as any).onYouTubeIframeAPIReady = init; }
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    };
-  }, []);
-
-  // ── Contrôles ─────────────────────────────────────────────────────────────
-  const togglePlay = () => {
-    if (!playerRef.current) return;
-    setIsTransitioning(true);
-    if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
-    // Sécurité : si onStateChange ne répond pas, on sort du noir après 2.5s
-    transitionTimerRef.current = setTimeout(() => setIsTransitioning(false), 2500);
-    if (isPlaying) {
-      playerRef.current.pauseVideo?.();
-    } else {
-      playerRef.current.playVideo?.();
-    }
-  };
-
-  const toggleSound = () => {
-    if (!playerRef.current) return;
-    if (isMuted) { playerRef.current.unMute?.(); }
-    else         { playerRef.current.mute?.();   }
-    setIsMuted(m => !m);
-  };
-
-  const seekToRatio = (ratio: number) => {
-    if (!duration) return;
-    const t = Math.max(0, Math.min(1, ratio)) * duration;
-    currentTimeRef.current = t;
-    setCurrentTime(t);
-    playerRef.current?.seekTo?.(t, true);
-  };
-
-  const getRatioFromEvent = (e: MouseEvent | React.MouseEvent | TouchEvent | React.TouchEvent) => {
-    const bar = barRef.current;
-    if (!bar) return 0;
-    const rect = bar.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0]?.clientX ?? (e as TouchEvent).changedTouches[0]?.clientX : (e as MouseEvent).clientX;
-    return (clientX - rect.left) / rect.width;
-  };
-
-  // Drag seekbar
-  const handleBarMouseDown = (e: React.MouseEvent) => {
-    isSeekingRef.current = true;
-    setIsSeeking(true);
-    seekToRatio(getRatioFromEvent(e));
-
-    const onMove = (ev: MouseEvent) => seekToRatio(getRatioFromEvent(ev));
-    const onUp   = (ev: MouseEvent) => {
-      seekToRatio(getRatioFromEvent(ev));
-      isSeekingRef.current = false;
-      setIsSeeking(false);
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup',   onUp);
-    };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup',   onUp);
-  };
-
-  const handleBarTouchStart = (e: React.TouchEvent) => {
-    isSeekingRef.current = true;
-    setIsSeeking(true);
-    seekToRatio(getRatioFromEvent(e));
-
-    const onMove = (ev: TouchEvent) => seekToRatio(getRatioFromEvent(ev));
-    const onEnd  = (ev: TouchEvent) => {
-      seekToRatio(getRatioFromEvent(ev));
-      isSeekingRef.current = false;
-      setIsSeeking(false);
-      window.removeEventListener('touchmove', onMove);
-      window.removeEventListener('touchend',  onEnd);
-    };
-    window.addEventListener('touchmove', onMove);
-    window.addEventListener('touchend',  onEnd);
+  // ── Unmute Bunny Stream via player.js postMessage ─────────────────────────
+  const handleUnmute = () => {
+    try {
+      const win = iframeRef.current?.contentWindow;
+      if (!win) return;
+      win.postMessage(JSON.stringify({ context: 'player.js', version: '0.0.12', method: 'setVolume', value: 100 }), '*');
+      win.postMessage(JSON.stringify({ context: 'player.js', version: '0.0.12', method: 'unmute' }), '*');
+    } catch (_) {}
+    setIsMuted(false);
   };
 
   // ── Auto-hide contrôles ───────────────────────────────────────────────────
-  const revealControls = () => {
-    setShowControls(true);
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    hideTimerRef.current = setTimeout(() => {
-      // Lire l'état en temps réel via l'API YT (évite la closure stale sur isPlaying)
-      if (playerRef.current?.getPlayerState?.() === 1) setShowControls(false);
-    }, 3000);
-  };
-  const hideControls = () => {
-    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
-    if (isPlaying) setShowControls(false);
-  };
-  // Touch : un tap révèle les contrôles (mobile)
-  const handleContainerTouch = () => revealControls();
+  const revealControls = () => {};
+  const hideControls = () => {};
+  const handleContainerTouch = () => {};
 
 
   // ── Fullscreen — on fullscreen la PAGE entière, pas le container ────────
@@ -482,13 +315,6 @@ export function HeroCartoon() {
       exit?.call(doc);
     }
   };
-
-  const fmtTime = (s: number) => {
-    const m = Math.floor(s / 60);
-    return `${m}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
-  };
-
-  const pct = duration ? (currentTime / duration) * 100 : 0;
 
   useEffect(() => {
     // Utiliser screen.orientation pour détecter le vrai paysage,
@@ -613,157 +439,53 @@ export function HeroCartoon() {
         <iframe
           ref={iframeRef}
           className="w-full h-full"
-          src={embedUrl}
+          src={BUNNY_EMBED_URL}
+          loading="lazy"
           title="VSL"
-          style={{ border: 'none' }}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          style={{ border: 0, position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
+          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
           allowFullScreen
         />
 
-        {/* Bloqueur — transparent en lecture, masque l'overlay YouTube en pause/chargement */}
-        <div
-          onClick={togglePlay}
-          style={{
-            position: 'absolute', inset: 0, zIndex: 8, pointerEvents: 'auto',
-            background: (isTransitioning || !isReady)
-              ? 'rgba(0,0,0,1)'
-              : isPlaying
-                ? 'transparent'
-                : 'rgba(0,0,0,0.6)',
-            // Entrée dans le noir : instantanée (pas de transition = flash masqué immédiatement)
-            // Sortie du noir : smooth fade pour ne pas couper brutalement
-            transition: (isTransitioning || !isReady) ? 'none' : 'background 0.3s ease',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          {/* Bouton play : uniquement quand prêt, en pause, hors transition et hors buffering */}
-          {isReady && !isPlaying && !isTransitioning && !isBuffering && (
-            <div style={{
-              width: 56, height: 56, borderRadius: '50%',
-              background: 'rgba(236,100,38,0.92)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-              transition: 'transform 0.15s ease',
-            }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M6 4l14 8-14 8V4z"/></svg>
-            </div>
-          )}
-        </div>
-
-        {/* ── Barre de contrôles custom ── */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          padding: '10px 12px 10px',
-          background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 70%, transparent 100%)',
-          display: 'flex', flexDirection: 'column', gap: 8,
-          zIndex: 10, pointerEvents: 'auto',
-          opacity: showControls ? 1 : 0,
-          transition: 'opacity 0.35s ease',
-        }}>
-
-          {/* Ligne 1 : play/pause + seekbar + temps */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-
-            {/* Bouton play/pause — target 44px min pour touch */}
-            <button onClick={togglePlay} style={{
-              background: 'none', border: 'none',
-              padding: '6px', margin: '-6px',
-              cursor: 'pointer', color: '#fff', flexShrink: 0, lineHeight: 0,
-              filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))',
-              minWidth: 44, minHeight: 44,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              {isPlaying
-                ? <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="4" width="4" height="16" rx="1"/><rect x="15" y="4" width="4" height="16" rx="1"/></svg>
-                : <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8V4z"/></svg>
-              }
-            </button>
-
-            {/* Seekbar custom */}
-            <div
-              ref={barRef}
-              onMouseDown={handleBarMouseDown}
-              onTouchStart={handleBarTouchStart}
-              style={{
-                flex: 1, height: 20, display: 'flex', alignItems: 'center',
-                cursor: 'pointer', position: 'relative',
-              }}
-            >
-              {/* Piste de fond */}
-              <div style={{
-                position: 'absolute', left: 0, right: 0,
-                height: 4, borderRadius: 9999,
-                background: 'rgba(255,255,255,0.25)',
-                overflow: 'hidden',
-              }}>
-                {/* Progression */}
-                <div style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0,
-                  width: `${pct}%`,
-                  background: '#EC6426',
-                  borderRadius: 9999,
-                  transition: isSeeking ? 'none' : 'width 0.25s linear',
-                }} />
-              </div>
-              {/* Thumb — 12px, zone de touch large via height: 20px sur le parent */}
-              <div style={{
-                position: 'absolute',
-                left: `calc(${pct}% - 6px)`,
-                width: 12, height: 12,
-                borderRadius: '50%',
-                background: '#EC6426',
-                boxShadow: '0 0 4px rgba(0,0,0,0.5)',
-                transition: isSeeking ? 'none' : 'left 0.25s linear',
-                pointerEvents: 'none',
-              }} />
-            </div>
-
-            {/* Temps */}
-            <span style={{
-              color: 'rgba(255,255,255,0.9)', fontSize: 11,
-              fontFamily: 'var(--font-baloo)', fontWeight: 600,
-              whiteSpace: 'nowrap', flexShrink: 0,
-              textShadow: '0 1px 3px rgba(0,0,0,0.6)',
-            }}>
-              {duration > 0 ? `${fmtTime(currentTime)} / ${fmtTime(duration)}` : '--:-- / --:--'}
-            </span>
-          </div>
-
-        </div>
-
-        {/* ── Boutons persistants : son + plein écran — toujours visibles ── */}
-        <div style={{
-          position: 'absolute', bottom: 48, left: 0, right: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-          zIndex: 11, pointerEvents: 'auto',
-        }}>
-          {isMuted && (
-            <button onClick={toggleSound} style={{
-              background: 'rgba(0,0,0,0.65)', color: '#fff',
-              border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
-              padding: '4px 12px', fontSize: 12, fontWeight: 700,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-              backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-              whiteSpace: 'nowrap', fontFamily: 'var(--font-baloo)',
-            }}>
-              🔇 Activer le son
-            </button>
-          )}
-          <button onClick={toggleFullscreen} aria-label="Plein écran" style={{
-            background: 'rgba(0,0,0,0.65)', color: '#fff',
-            border: '1.5px solid rgba(255,255,255,0.18)', borderRadius: 8,
-            padding: '4px 10px', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', gap: 5,
-            backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-            fontFamily: 'var(--font-baloo)', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
-          }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
-              <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+        {/* Bouton unmute — disparaît après clic */}
+        {isMuted && (
+          <button
+            onClick={handleUnmute}
+            type="button"
+            aria-label="Activer le son"
+            style={{
+              position: 'absolute', bottom: 18, right: 18, zIndex: 10,
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '10px 16px',
+              background: '#FF6B1A', color: '#fff',
+              fontFamily: 'var(--font-baloo), system-ui, sans-serif',
+              fontWeight: 700, fontSize: 15,
+              border: '3px solid #1A1A1A', borderRadius: 12,
+              boxShadow: '4px 4px 0 #1A1A1A',
+              cursor: 'pointer',
+              transition: 'transform .15s ease, box-shadow .15s ease',
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translate(-2px,-2px)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '6px 6px 0 #1A1A1A';
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = '';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '4px 4px 0 #1A1A1A';
+            }}
+            onMouseDown={e => {
+              (e.currentTarget as HTMLButtonElement).style.transform = 'translate(2px,2px)';
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = '1px 1px 0 #1A1A1A';
+            }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
             </svg>
-            Plein écran
+            <span>Activer le son</span>
           </button>
-        </div>
+        )}
       </div>
 
       {/* BACKGROUND IMAGE */}
