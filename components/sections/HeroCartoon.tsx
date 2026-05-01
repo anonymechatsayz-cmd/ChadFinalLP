@@ -18,7 +18,7 @@ const C = {
 };
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-const BUNNY_EMBED_URL = 'https://player.mediadelivery.net/embed/650000/6f52307c-a669-4355-96dd-d69a109b4c84?autoplay=true&loop=false&muted=true&preload=true&responsive=true';
+const BUNNY_EMBED_URL = 'https://player.mediadelivery.net/embed/651267/4e9bf07e-4c54-4d3f-95f7-a7f7cf1f08ab?autoplay=true&loop=false&muted=true&preload=true&responsive=true';
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const SKY_SYMS = [
