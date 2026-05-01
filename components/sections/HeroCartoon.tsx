@@ -377,7 +377,7 @@ export function HeroCartoon() {
       const zoneCenterLayout = imgTop + ZONE_TOP_PX * imgH + (ZONE_H_PX * imgH) / 2;
       const zoneCenter = T + (zoneCenterLayout - T) * SCALE;
 
-      const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
+      const zoneW = ZONE_W_PX * imgW * SCALE * 0.97;
       const zoneH = zoneW * (9 / 16);
 
       const vslTop = zoneCenter - zoneH / 2;
