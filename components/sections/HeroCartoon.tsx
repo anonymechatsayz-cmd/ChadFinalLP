@@ -336,9 +336,9 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const IMG_RATIO  = 4000 / 2233;
-    const ZONE_TOP_PX = 850  / 2233;
-    const ZONE_H_PX   = 580  / 2233;
-    const ZONE_W_PX   = 1120 / 4000;
+    const ZONE_TOP_PX = 840  / 2233;
+    const ZONE_H_PX   = 610  / 2233;
+    const ZONE_W_PX   = 1160 / 4000;
 
     // On mémorise la largeur utilisée pour le dernier calcul.
     // Sur mobile, le scroll fait apparaître/disparaître la barre du navigateur,
@@ -377,7 +377,7 @@ export function HeroCartoon() {
       const zoneCenterLayout = imgTop + ZONE_TOP_PX * imgH + (ZONE_H_PX * imgH) / 2;
       const zoneCenter = T + (zoneCenterLayout - T) * SCALE;
 
-      const zoneW = ZONE_W_PX * imgW * SCALE * 0.97;
+      const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
       const zoneH = zoneW * (9 / 16);
 
       const vslTop = zoneCenter - zoneH / 2;
