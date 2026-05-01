@@ -380,7 +380,7 @@ export function HeroCartoon() {
       const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
       const zoneH = zoneW * (9 / 16);
 
-      const vslTop = zoneCenter - zoneH / 2 - 10;
+      const vslTop = zoneCenter - zoneH / 2 - 14;
       setVslStyle({ top: vslTop, height: zoneH, width: zoneW });
       sectionRef.current?.style.setProperty('--vsl-top', `${Math.round(vslTop)}px`);
     };
@@ -425,7 +425,7 @@ export function HeroCartoon() {
           width: '100vw', height: '100vh',
           background: '#000',
         } : {
-          position: 'absolute', left: '50%', transform: 'translateX(calc(-50% + 14px))',
+          position: 'absolute', left: '50%', transform: 'translateX(calc(-50% + 5px))',
           zIndex: 2,
           ...vslStyle,
           opacity: vslStyle.top !== undefined ? 1 : 0,
