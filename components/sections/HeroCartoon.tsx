@@ -336,9 +336,9 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const IMG_RATIO  = 4000 / 2233;
-    const ZONE_TOP_PX = 840  / 2233;
-    const ZONE_H_PX   = 595  / 2233;
-    const ZONE_W_PX   = 1130 / 4000;
+    const ZONE_TOP_PX = 850  / 2233;
+    const ZONE_H_PX   = 580  / 2233;
+    const ZONE_W_PX   = 1120 / 4000;
 
     // On mémorise la largeur utilisée pour le dernier calcul.
     // Sur mobile, le scroll fait apparaître/disparaître la barre du navigateur,
@@ -380,7 +380,7 @@ export function HeroCartoon() {
       const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
       const zoneH = zoneW * (9 / 16);
 
-      const vslTop = zoneCenter - zoneH / 2 - 14;
+      const vslTop = zoneCenter - zoneH / 2;
       setVslStyle({ top: vslTop, height: zoneH, width: zoneW });
       sectionRef.current?.style.setProperty('--vsl-top', `${Math.round(vslTop)}px`);
     };
@@ -425,7 +425,7 @@ export function HeroCartoon() {
           width: '100vw', height: '100vh',
           background: '#000',
         } : {
-          position: 'absolute', left: '50%', transform: 'translateX(calc(-50% + 5px))',
+          position: 'absolute', left: '50%', transform: 'translateX(-50%)',
           zIndex: 2,
           ...vslStyle,
           opacity: vslStyle.top !== undefined ? 1 : 0,
@@ -442,10 +442,17 @@ export function HeroCartoon() {
           src={BUNNY_EMBED_URL}
           loading="lazy"
           title="VSL"
-          style={{ border: 0, position: 'absolute', top: '-40px', left: 0, height: 'calc(100% + 40px)', width: '100%' }}
+          style={{ border: 0, position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
           allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
           allowFullScreen
         />
+
+        {/* Masque bas — cache la bande blanche native du player Bunny */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: 6, zIndex: 20, pointerEvents: 'none',
+          background: '#1a1209',
+        }} />
 
         {/* Bouton unmute — disparaît après clic */}
         {isMuted && (
