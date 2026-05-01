@@ -381,7 +381,7 @@ export function HeroCartoon() {
       const zoneH = zoneW * (9 / 16);
 
       const vslTop = zoneCenter - zoneH / 2 - 14;
-      setVslStyle({ top: vslTop, height: zoneH - 18, width: zoneW });
+      setVslStyle({ top: vslTop, height: zoneH, width: zoneW });
       sectionRef.current?.style.setProperty('--vsl-top', `${Math.round(vslTop)}px`);
     };
 
@@ -442,7 +442,7 @@ export function HeroCartoon() {
           src={BUNNY_EMBED_URL}
           loading="lazy"
           title="VSL"
-          style={{ border: 0, position: 'absolute', top: 0, left: 0, height: '100%', width: '100%' }}
+          style={{ border: 0, position: 'absolute', top: 0, left: 0, height: 'calc(100% + 40px)', width: '100%' }}
           allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;"
           allowFullScreen
         />
