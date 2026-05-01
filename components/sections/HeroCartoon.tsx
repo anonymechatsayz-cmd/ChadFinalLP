@@ -380,8 +380,8 @@ export function HeroCartoon() {
       const zoneW = ZONE_W_PX * imgW * SCALE * 1.02;
       const zoneH = zoneW * (9 / 16);
 
-      const vslTop = zoneCenter - zoneH / 2 - 8;
-      setVslStyle({ top: vslTop, height: zoneH, width: zoneW, marginLeft: 12 });
+      const vslTop = zoneCenter - zoneH / 2 - 14;
+      setVslStyle({ top: vslTop, height: zoneH, width: zoneW, marginLeft: 22 });
       sectionRef.current?.style.setProperty('--vsl-top', `${Math.round(vslTop)}px`);
     };
 
