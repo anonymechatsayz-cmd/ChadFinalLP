@@ -336,9 +336,9 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const IMG_RATIO  = 4000 / 2233;
-    const ZONE_TOP_PX = 865  / 2233;
-    const ZONE_H_PX   = 580  / 2233;
-    const ZONE_W_PX   = 1120 / 4000;
+    const ZONE_TOP_PX = 875  / 2233;
+    const ZONE_H_PX   = 550  / 2233;
+    const ZONE_W_PX   = 1080 / 4000;
 
     // On mémorise la largeur utilisée pour le dernier calcul.
     // Sur mobile, le scroll fait apparaître/disparaître la barre du navigateur,
