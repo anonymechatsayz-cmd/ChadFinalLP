@@ -18,7 +18,7 @@ const C = {
 };
 
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-const BUNNY_EMBED_URL = 'https://player.mediadelivery.net/embed/651267/4e9bf07e-4c54-4d3f-95f7-a7f7cf1f08ab?autoplay=true&loop=false&muted=true&preload=true&responsive=true';
+const BUNNY_EMBED_URL = 'https://player.mediadelivery.net/embed/651267/a320fd04-0149-4642-87ee-456a6546e0bf?autoplay=false&loop=false&muted=false&preload=true&responsive=true';
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 const SKY_SYMS = [
@@ -336,7 +336,7 @@ export function HeroCartoon() {
 
   useEffect(() => {
     const IMG_RATIO  = 4000 / 2233;
-    const ZONE_TOP_PX = 850  / 2233;
+    const ZONE_TOP_PX = 865  / 2233;
     const ZONE_H_PX   = 580  / 2233;
     const ZONE_W_PX   = 1120 / 4000;
 
