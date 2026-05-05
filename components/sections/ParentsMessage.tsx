@@ -36,10 +36,10 @@ const CONS_LEFT = [
 ];
 
 const PROS_RIGHT = [
-  '+300h de travail condensé en méthode visuelle complète',
+  'Tout le programme condensé en méthode visuelle complète',
   'Réelle compréhension des notions pour continuer les mathématiques après le bac',
   "Explications profondes des mécanismes pour comprendre avant d'apprendre",
-  "Disponible 7j/7, 24h/24, dès qu'il y a une incompréhension",
+  "Disponible 7j/7, 24h/24 pour répondre aux questions et aux incompréhensions",
   'Rend les maths fun et améliore la perception de la matière',
   "Rend l'élève 100% autonome face à sa copie",
   "Vidéos rejouables à l'infini jusqu'au déclic",
