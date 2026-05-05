@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Play, Infinity as InfinityIcon, ShieldCheck, Lock } from 'lucide-react';
+import { Play, Infinity as InfinityIcon, ShieldCheck, Lock, MessageCircle } from 'lucide-react';
 import { GreekCTA } from '@/components/ui';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -101,7 +101,7 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
 /** Pricing section — structure CS MS adaptée DA grecque */
 export function PricingSection() {
   return (
-    <section id="pricing" className="relative overflow-hidden py-16 md:py-32 px-4 md:px-8"
+    <section id="pricing" className="relative overflow-hidden py-16 md:py-32 px-4 md:px-8 pb-16 md:pb-28"
       style={{ background: 'linear-gradient(180deg,#071229 0%,#0a1628 45%,#0d1b3e 80%,#071229 100%)' }}>
 
       {/* Ligne dorée haut */}
@@ -180,6 +180,21 @@ export function PricingSection() {
                 Mises à jour à vie
               </span>
               <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>Inestimable</span>
+            </motion.div>
+
+            {/* Ligne 3 */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, margin: '0px 0px -40px 0px' }} transition={{ duration: 0.45, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              className="flex justify-between items-center pb-5 px-2 cursor-default"
+              style={{ borderBottom: '2px solid rgba(212,168,83,0.15)' }}
+            >
+              <span className="flex items-center gap-3" style={{ fontFamily: 'var(--font-baloo)', fontWeight: 700, fontSize: 'clamp(13px,1.3vw,20px)', color: '#f5ecd4' }}>
+                <div className="rounded-lg p-2 shrink-0" style={{ background: '#EC6426', border: '2px solid rgba(255,255,255,0.3)' }}>
+                  <MessageCircle className="w-5 h-5 text-white" />
+                </div>
+                Réponse aux questions des élèves directement dans la formation
+              </span>
+              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>+500</span>
             </motion.div>
 
             {/* Total */}
@@ -269,6 +284,7 @@ export function PricingSection() {
                   </div>
                 ))}
               </div>
+
             </motion.div>
 
             {/* Chibi hautain flipped — sort de la carte à droite, à mi-hauteur */}
@@ -303,6 +319,44 @@ export function PricingSection() {
             </div>
           </div>
         </div>
+
+        {/* ── Bloc "OU teste gratuitement" — centré sous le grid ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+          transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 flex flex-col items-center mt-16 md:mt-24"
+        >
+          <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(13px,1.1vw,16px)', color: 'rgba(245,236,212,0.55)', marginBottom: 12, letterSpacing: '.04em' }}>
+            OU teste gratuitement ici :
+          </p>
+          <a
+            href="https://guide.maths-ultime.fr/freetrial"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              padding: 'clamp(12px,1.2vw,16px) clamp(24px,2.5vw,40px)',
+              background: 'transparent',
+              color: '#f5ecd4',
+              border: '2px solid rgba(232,201,106,0.5)',
+              borderRadius: 12,
+              boxShadow: '0 0 0 0 transparent',
+              fontFamily: 'var(--font-baloo)', fontWeight: 700,
+              fontSize: 'clamp(14px,1.2vw,18px)',
+              textDecoration: 'none', letterSpacing: '.04em',
+              cursor: 'pointer',
+              transition: 'border-color 0.2s, background 0.2s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e8c96a'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,201,106,0.08)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(232,201,106,0.5)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
+          >
+            <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
+            Obtenir un échantillon gratuit
+          </a>
+        </motion.div>
+
       </div>
     </section>
   );
@@ -389,6 +443,31 @@ export function FAQSection() {
             <div style={{ width: '80%' }}>
               <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
             </div>
+            <div style={{ textAlign: 'center', marginTop: 12 }}>
+              <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(11px,0.9vw,13px)', color: 'rgba(26,45,74,0.55)', marginBottom: 6 }}>
+                Déjà rejoint ?
+              </p>
+              <a
+                href="https://fr.trustpilot.com/review/maths-ultime.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '10px 20px',
+                  background: '#00b67a', color: '#fff',
+                  border: '2px solid #009e6b',
+                  borderRadius: 10,
+                  boxShadow: '3px 3px 0 #007a52',
+                  fontFamily: 'var(--font-baloo)', fontWeight: 700,
+                  fontSize: 'clamp(12px,1vw,14px)',
+                  textDecoration: 'none', letterSpacing: '.03em',
+                  cursor: 'pointer',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>★</span>
+                Partage ton expérience !
+              </a>
+            </div>
           </motion.div>
 
         </div>
@@ -398,6 +477,31 @@ export function FAQSection() {
           <LogoVisuD size={360} className="mb-[-68px]" />
           <div style={{ width: '80%' }}>
             <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 13, color: 'rgba(26,45,74,0.55)', marginBottom: 6 }}>
+              Déjà rejoint ?
+            </p>
+            <a
+              href="https://fr.trustpilot.com/review/maths-ultime.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                padding: '10px 20px',
+                background: '#00b67a', color: '#fff',
+                border: '2px solid #009e6b',
+                borderRadius: 10,
+                boxShadow: '3px 3px 0 #007a52',
+                fontFamily: 'var(--font-baloo)', fontWeight: 700,
+                fontSize: 14,
+                textDecoration: 'none', letterSpacing: '.03em',
+                cursor: 'pointer',
+              }}
+            >
+              <span style={{ fontSize: 16 }}>★</span>
+              Partage ton expérience !
+            </a>
           </div>
         </div>
 

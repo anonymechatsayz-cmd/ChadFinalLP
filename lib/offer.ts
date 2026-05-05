@@ -1,6 +1,6 @@
 /** Source unique : prix, VSL, FAQ, formulations validables avec le client. */
 export const offerConfig = {
-  regularPrice: 67,
+  regularPrice: 97,
   launchPrice: 47,
   discountPercent: 0,
   guaranteeDays: 14,
