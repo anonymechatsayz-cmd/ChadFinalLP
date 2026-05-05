@@ -668,7 +668,7 @@ export function HeroCartoon() {
         <motion.div
           initial={{ opacity:0, y:30, scale:0.95 }} animate={{ opacity:1, y:0, scale:1 }} transition={{ delay:0.25, duration:0.65, type:'spring' }}
           className="hidden sm:flex absolute z-20 left-1/2 -translate-x-1/2 flex-col items-center pointer-events-none w-full px-4"
-          style={{ bottom: 'clamp(4px, 1%, 16px)' }}>
+          style={{ bottom: 'clamp(16px, 2%, 28px)' }}>
           <div className="pointer-events-auto flex flex-col items-center w-full">
             <motion.div
               initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
@@ -687,7 +687,7 @@ export function HeroCartoon() {
               <div className="flex items-center gap-3 flex-wrap justify-center mt-3">
                 {['Méthode visuelle', 'Garantie satisfait ou remboursé', 'Accès à vie'].map((label, i) => (
                   <div key={i} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
-                    style={{ background: 'rgba(255,255,255,0.97)', border: '1.5px solid rgba(26,26,26,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
+                    style={{ background: 'rgba(240,240,245,0.97)', border: '1.5px solid rgba(26,26,26,0.22)', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
                     <span style={{ fontSize: 'clamp(11px, 0.85vw, 13px)', color: 'rgba(20,40,60,0.92)', fontFamily: 'var(--font-baloo)', fontWeight: 600 }}>{label}</span>
                   </div>
                 ))}

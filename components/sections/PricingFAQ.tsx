@@ -101,7 +101,7 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
 /** Pricing section — structure CS MS adaptée DA grecque */
 export function PricingSection() {
   return (
-    <section id="pricing" className="relative overflow-hidden py-16 md:py-32 px-4 md:px-8 pb-16 md:pb-28"
+    <section id="pricing" className="relative overflow-hidden py-16 md:py-32 px-4 md:px-8 pb-10 md:pb-20"
       style={{ background: 'linear-gradient(180deg,#071229 0%,#0a1628 45%,#0d1b3e 80%,#071229 100%)' }}>
 
       {/* Ligne dorée haut */}
@@ -175,11 +175,11 @@ export function PricingSection() {
             >
               <span className="flex items-center gap-3" style={{ fontFamily: 'var(--font-baloo)', fontWeight: 700, fontSize: 'clamp(13px,1.3vw,20px)', color: '#f5ecd4' }}>
                 <div className="rounded-lg p-2 shrink-0" style={{ background: '#EC6426', border: '2px solid rgba(255,255,255,0.3)' }}>
-                  <InfinityIcon className="w-5 h-5 text-white" />
+                  <MessageCircle className="w-5 h-5 text-white" />
                 </div>
-                Mises à jour à vie
+                Réponses aux questions directement intégrées dans le guide
               </span>
-              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>Inestimable</span>
+              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>297€</span>
             </motion.div>
 
             {/* Ligne 3 */}
@@ -190,11 +190,11 @@ export function PricingSection() {
             >
               <span className="flex items-center gap-3" style={{ fontFamily: 'var(--font-baloo)', fontWeight: 700, fontSize: 'clamp(13px,1.3vw,20px)', color: '#f5ecd4' }}>
                 <div className="rounded-lg p-2 shrink-0" style={{ background: '#EC6426', border: '2px solid rgba(255,255,255,0.3)' }}>
-                  <MessageCircle className="w-5 h-5 text-white" />
+                  <InfinityIcon className="w-5 h-5 text-white" />
                 </div>
-                Réponses aux questions directement intégrées dans le guide
+                Mises à jour à vie
               </span>
-              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>297€</span>
+              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>Inestimable</span>
             </motion.div>
 
             {/* Total */}
@@ -204,7 +204,7 @@ export function PricingSection() {
               style={{ background: 'linear-gradient(135deg, #ede5da 0%, #d8ccbc 40%, #e8ddd0 70%, #cfc3b4 100%)', border: '2px solid #8a7968', boxShadow: '4px 4px 0 #5a4e3e', transform: 'rotate(-1deg)' }}
             >
               <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 900, fontSize: 'clamp(18px,2vw,26px)', color: '#2a1e12', textTransform: 'uppercase' }}>Valeur Totale</span>
-              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 900, fontSize: 'clamp(28px,3vw,40px)', color: '#2a1e12', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3 }}>197€</span>
+              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 900, fontSize: 'clamp(28px,3vw,40px)', color: '#2a1e12', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3 }}>≈497€</span>
             </motion.div>
           </motion.div>
 
@@ -322,11 +322,11 @@ export function PricingSection() {
 
         {/* ── Bloc "OU teste gratuitement" — centré sous le grid ── */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '0px 0px -40px 0px' }}
-          transition={{ duration: 0.55, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 flex flex-col items-center mt-16 md:mt-24"
+          transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+          className="relative z-10 flex flex-col items-center mt-10 md:mt-14"
         >
           <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(13px,1.1vw,16px)', color: 'rgba(245,236,212,0.55)', marginBottom: 12, letterSpacing: '.04em' }}>
             OU teste gratuitement ici :
