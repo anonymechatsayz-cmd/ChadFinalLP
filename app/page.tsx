@@ -8,6 +8,7 @@ import { PricingSection, FAQSection } from '@/components/sections/PricingFAQ';
 import { SiteFooter, StickyMobileCTA } from '@/components/sections/CTA';
 import { SectionParchmentDivider } from '@/components/SectionParchmentDivider';
 import { MidPageCta } from '@/components/MidPageCta';
+import { LeadPopup } from '@/components/LeadPopup';
 
 export default function LandingPage() {
   return (
@@ -29,6 +30,7 @@ export default function LandingPage() {
       <FAQSection />
       <SiteFooter />
       <StickyMobileCTA />
+      <LeadPopup />
     </main>
   );
 }

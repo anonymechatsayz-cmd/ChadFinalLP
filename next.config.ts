@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  output: 'export',
+  // output: 'export', // retiré — incompatible avec les API routes Next.js (Vercel)
   transpilePackages: ['motion'],
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.
