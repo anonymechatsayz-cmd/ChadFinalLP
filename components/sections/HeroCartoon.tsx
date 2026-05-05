@@ -425,7 +425,7 @@ export function HeroCartoon() {
           width: '100vw', height: '100vh',
           background: '#000',
         } : {
-          position: 'absolute', left: '50%', transform: 'translateX(-50%)',
+          position: 'absolute', left: '50%', transform: 'translateX(calc(-50% - 2px)) translateY(2px)',
           zIndex: 2,
           ...vslStyle,
           opacity: vslStyle.top !== undefined ? 1 : 0,
