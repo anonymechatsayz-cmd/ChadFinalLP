@@ -24,11 +24,9 @@ function FreeTrialButton() {
   }, [inView]);
 
   return (
-    <motion.a
+    <motion.button
       ref={scope}
-      href="https://guide.maths-ultime.fr/freetrial"
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={() => window.dispatchEvent(new CustomEvent('mu:open-popup'))}
       whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -38,27 +36,27 @@ function FreeTrialButton() {
         borderRadius: 12,
         fontFamily: 'var(--font-baloo)', fontWeight: 700,
         fontSize: 'clamp(14px,1.2vw,18px)',
-        textDecoration: 'none', letterSpacing: '.04em',
+        letterSpacing: '.04em',
         cursor: 'pointer',
         opacity: 0,
         transition: 'background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease',
       }}
       onMouseEnter={e => {
-        const el = e.currentTarget as HTMLAnchorElement;
+        const el = e.currentTarget as HTMLButtonElement;
         el.style.background = 'rgba(232,201,106,0.08)';
         el.style.borderColor = '#e8c96a';
         el.style.boxShadow = '0 0 16px rgba(232,201,106,0.4)';
       }}
       onMouseLeave={e => {
-        const el = e.currentTarget as HTMLAnchorElement;
+        const el = e.currentTarget as HTMLButtonElement;
         el.style.background = 'transparent';
         el.style.borderColor = 'rgba(232,201,106,0.5)';
         el.style.boxShadow = 'none';
       }}
     >
       <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
-      Obtenir une vidéo gratuite
-    </motion.a>
+      Obtenir gratuitement
+    </motion.button>
   );
 }
 

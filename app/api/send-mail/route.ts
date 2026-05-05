@@ -27,21 +27,20 @@ export async function POST(req: NextRequest) {
         <tr>
           <td style="background:linear-gradient(135deg,#FF8040 0%,#EC6426 50%,#E04A10 100%);padding:32px;text-align:center">
             <p style="margin:0 0 6px;color:rgba(255,255,255,0.8);font-size:12px;letter-spacing:.15em;text-transform:uppercase">MATHS ULTIME — CHADSCIENCES</p>
-            <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:900;line-height:1.2">Ton guide vidéo est là&nbsp;! 🎬</h1>
+            <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:900;line-height:1.2">Ta 1ère vidéo gratuite est là&nbsp;! 🎬</h1>
           </td>
         </tr>
         <tr>
           <td style="padding:36px 32px">
             <p style="margin:0 0 18px;font-size:16px;color:#1A1A1A;line-height:1.6">Salut <strong>${prenom}</strong>&nbsp;👋</p>
-            <p style="margin:0 0 16px;font-size:15px;color:#444;line-height:1.7">
-              Comme promis, voici ton <strong>guide vidéo gratuit</strong> pour viser 20/20 en maths.
-              Clique sur le bouton ci-dessous pour le regarder maintenant&nbsp;:
+            <p style="margin:0 0 20px;font-size:15px;color:#444;line-height:1.7">
+              Accède à la première vidéo du guide gratuitement en cliquant ici&nbsp;:
             </p>
             <table cellpadding="0" cellspacing="0" width="100%">
-              <tr><td align="center" style="padding:8px 0 28px">
+              <tr><td align="center" style="padding:0 0 28px">
                 <a href="${YOUTUBE_URL}"
                    style="display:inline-block;background:linear-gradient(135deg,#F5C842 0%,#E8A800 100%);color:#1A1A1A;font-weight:900;font-size:16px;text-decoration:none;padding:16px 36px;border-radius:12px;letter-spacing:.02em">
-                  ▶&nbsp;&nbsp;Regarder le guide vidéo
+                  ▶&nbsp;&nbsp;Regarder la vidéo gratuite
                 </a>
               </td></tr>
             </table>
@@ -98,7 +97,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         sender:      { name: SENDER_NAME, email: SENDER_EMAIL },
         to:          [{ email, name: `${prenom} ${nom}` }],
-        subject:     'Ton guide vidéo Maths Ultime est là 🎬',
+        subject:     'Ta 1ère vidéo gratuite Maths Ultime est là 🎬',
         htmlContent,
       }),
     });
