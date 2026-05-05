@@ -234,7 +234,7 @@ export function PricingSection() {
               </h3>
 
               {/* Prix barré — gros + rouge */}
-              <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(22px,2.5vw,32px)', color: '#c0392b', textDecoration: 'line-through', textDecorationColor: '#c0392b', textDecorationThickness: 3, marginBottom: 0, lineHeight: 1.1 }}>
+              <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(22px,2.5vw,32px)', color: '#c0392b', textDecoration: 'line-through', textDecorationColor: '#c0392b', textDecorationThickness: 3, marginBottom: -8, lineHeight: 1.1 }}>
                 {offerConfig.regularPrice}€
               </p>
 
