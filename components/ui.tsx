@@ -24,6 +24,7 @@ const TRUST_BADGES = [
 // ═══════════════════════════════════════════════════════════════════════════
 interface GreekCTAProps {
   href?: string;
+  scrollTo?: string;
   label?: string;
   showBadges?: boolean;
   size?: 'sm' | 'md' | 'lg';
@@ -36,6 +37,7 @@ interface GreekCTAProps {
 
 export function GreekCTA({
   href,
+  scrollTo,
   label = 'JE VEUX 15/20 EN MATHS',
   showBadges = true,
   size = 'md',
@@ -45,6 +47,10 @@ export function GreekCTA({
   onGroupHoverStart,
   onGroupHoverEnd,
 }: GreekCTAProps) {
+  const handleClick = scrollTo ? (e: React.MouseEvent) => {
+    e.preventDefault();
+    document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth' });
+  } : undefined;
   const pad = size === 'sm'
     ? 'clamp(12px,1.2vw,15px) clamp(20px,4vw,56px)'
     : size === 'lg'
@@ -60,7 +66,8 @@ export function GreekCTA({
   return (
     <div className={`flex flex-col items-center gap-3 w-full max-w-[min(100%,480px)] ${className}`}>
       <motion.a
-        href={href ?? offerConfig.checkoutUrl}
+        href={scrollTo ? '#' : (href ?? offerConfig.checkoutUrl)}
+        onClick={handleClick}
         animate={isGrouped
           ? { y: groupHovered ? 2 : 0, boxShadow: groupHovered
               ? `4px 4px 0 ${shadowCol}, 0 6px 20px rgba(236,100,38,0.25), inset 0 2px 0 rgba(255,255,255,0.2)`

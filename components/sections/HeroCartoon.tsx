@@ -678,7 +678,7 @@ export function HeroCartoon() {
                 <CountdownBadge hovered={ctaHovered} />
                 <GreekCTA
                   size="md" goldBorder={false} showBadges={false}
-                  label="DÉCOUVRIR LE GUIDE" href="#guide-content"
+                  label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content"
                   groupHovered={ctaHovered}
                   onGroupHoverStart={() => setCtaHovered(true)}
                   onGroupHoverEnd={() => setCtaHovered(false)}
@@ -704,7 +704,7 @@ export function HeroCartoon() {
           <div className="pointer-events-auto flex flex-col items-center w-full">
             <CountdownBadge />
             <div className="w-full">
-              <GreekCTA size="md" goldBorder={false} showBadges={false} label="DÉCOUVRIR LE GUIDE" href="#guide-content" />
+              <GreekCTA size="md" goldBorder={false} showBadges={false} label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content" />
             </div>
             <div className="flex items-center gap-1.5 flex-wrap justify-center">
               {['Méthode visuelle', 'Garantie', 'Accès à vie'].map((label, i) => (
@@ -726,7 +726,7 @@ export function HeroCartoon() {
         <CountdownBadge />
         <div className="w-full flex justify-center pointer-events-auto">
           <div className="flex flex-col items-center w-full">
-            <GreekCTA size="md" goldBorder={false} showBadges={false} label="DÉCOUVRIR LE GUIDE" href="#guide-content" />
+            <GreekCTA size="md" goldBorder={false} showBadges={false} label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content" />
             <div className="hidden min-[375px]:flex items-center gap-2 flex-nowrap justify-center mt-3">
               {['Méthode visuelle', 'Garantie remboursé', 'Accès à vie'].map((label, i) => (
                 <div key={i} className="flex items-center gap-1 rounded-lg px-2.5 py-1.5"
