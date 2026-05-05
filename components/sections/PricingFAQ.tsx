@@ -192,9 +192,9 @@ export function PricingSection() {
                 <div className="rounded-lg p-2 shrink-0" style={{ background: '#EC6426', border: '2px solid rgba(255,255,255,0.3)' }}>
                   <MessageCircle className="w-5 h-5 text-white" />
                 </div>
-                Réponse aux questions des élèves directement dans la formation
+                Réponses aux questions directement intégrées dans le guide
               </span>
-              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>+500</span>
+              <span style={{ fontFamily: 'var(--font-baloo)', fontWeight: 800, fontSize: 'clamp(16px,2vw,30px)', color: 'rgba(245,236,212,0.45)', textDecoration: 'line-through', textDecorationColor: '#EC6426', textDecorationThickness: 3, whiteSpace: 'nowrap' }}>+297€</span>
             </motion.div>
 
             {/* Total */}
