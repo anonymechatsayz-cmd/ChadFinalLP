@@ -476,13 +476,13 @@ export function FAQSection() {
               <LogoVisuD size={360} className="mb-[-56px]" />
             </motion.div>
 
-            {/* CTA : révélation par clipPath — padding compense le clip sur l'ombre */}
+            {/* CTA : montée depuis le bas */}
             <motion.div
-              style={{ width: '80%', padding: '8px', margin: '-8px' }}
-              initial={{ clipPath: 'inset(0 100% 0 0 round 8px)' }}
-              whileInView={{ clipPath: 'inset(0 0% 0 0 round 8px)' }}
+              style={{ width: '80%' }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ duration: 0.65, delay: 0.32, ease: [0.76, 0, 0.24, 1] }}
+              transition={{ type: 'spring', stiffness: 90, damping: 16, delay: 0.32 }}
             >
               <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
             </motion.div>
