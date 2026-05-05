@@ -321,31 +321,32 @@ export function PricingSection() {
         </div>
 
         {/* ── Bloc "OU teste gratuitement" — centré sous le grid ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: '0px 0px -40px 0px' }}
-          transition={{ duration: 0.7, delay: 0.2, type: 'spring', stiffness: 120, damping: 18 }}
-          className="relative z-10 flex flex-col items-center mt-10 md:mt-14"
-        >
+        <div className="relative z-10 flex flex-col items-center mt-10 md:mt-14">
+          {/* Texte : lettres qui s'écrivent via clipPath vertical */}
           <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ clipPath: 'inset(0 0 100% 0)', opacity: 0 }}
+            whileInView={{ clipPath: 'inset(0 0 0% 0)', opacity: 1 }}
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
             style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(13px,1.1vw,16px)', color: 'rgba(245,236,212,0.55)', marginBottom: 12, letterSpacing: '.04em' }}
           >
             Ou teste Maths Ultime gratuitement
           </motion.p>
+
+          {/* Bouton : enseigne qui s'allume — border glow pulse en entrée */}
           <motion.a
             href="https://guide.maths-ultime.fr/freetrial"
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.45, type: 'spring', stiffness: 140, damping: 20 }}
-            whileHover={{ scale: 1.04, transition: { type: 'spring', stiffness: 280, damping: 22 } }}
+            initial={{ opacity: 0, borderColor: 'rgba(232,201,106,0)', boxShadow: '0 0 0px rgba(232,201,106,0)' }}
+            whileInView={{
+              opacity: 1,
+              borderColor: ['rgba(232,201,106,0)', '#e8c96a', '#e8c96a', 'rgba(232,201,106,0.5)'],
+              boxShadow: ['0 0 0px rgba(232,201,106,0)', '0 0 22px rgba(232,201,106,0.6)', '0 0 22px rgba(232,201,106,0.6)', '0 0 0px rgba(232,201,106,0)'],
+            }}
+            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+            transition={{ duration: 1.4, delay: 0.3, times: [0, 0.3, 0.65, 1], ease: 'easeInOut' }}
+            whileHover={{ scale: 1.04, boxShadow: '0 0 18px rgba(232,201,106,0.45)', transition: { type: 'spring', stiffness: 300, damping: 22 } }}
             whileTap={{ scale: 0.97 }}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -358,15 +359,15 @@ export function PricingSection() {
               fontSize: 'clamp(14px,1.2vw,18px)',
               textDecoration: 'none', letterSpacing: '.04em',
               cursor: 'pointer',
-              transition: 'border-color 0.2s, background 0.2s',
+              transition: 'background 0.2s',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = '#e8c96a'; (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,201,106,0.08)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(232,201,106,0.5)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(232,201,106,0.08)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
           >
             <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
             Obtenir une vidéo gratuite
           </motion.a>
-        </motion.div>
+        </div>
 
       </div>
     </section>
@@ -443,29 +444,35 @@ export function FAQSection() {
 
           {/* Colonne 3 — Logo + CTA (tiers droit, ~34% restant, contenu centré) */}
           <div className="hidden lg:flex flex-col items-center justify-center shrink-0" style={{ flex: 1, gap: 6 }}>
+
+            {/* Logo : chute depuis le haut avec rebond exagéré */}
             <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.92 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ y: -120, rotate: -8, opacity: 0 }}
+              whileInView={{ y: 0, rotate: 0, opacity: 1 }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ duration: 0.65, delay: 0.1, type: 'spring', stiffness: 100, damping: 18 }}
+              transition={{ type: 'spring', stiffness: 55, damping: 10, delay: 0.05 }}
             >
               <LogoVisuD size={360} className="mb-[-56px]" />
             </motion.div>
+
+            {/* CTA : révélation par clipPath (rideau horizontal gauche→droite) */}
             <motion.div
-              style={{ width: '80%' }}
-              initial={{ opacity: 0, scale: 0.88 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              style={{ width: '80%', overflow: 'hidden' }}
+              initial={{ clipPath: 'inset(0 100% 0 0)' }}
+              whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ duration: 0.55, delay: 0.28, type: 'spring', stiffness: 130, damping: 18 }}
+              transition={{ duration: 0.65, delay: 0.32, ease: [0.76, 0, 0.24, 1] }}
             >
               <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
             </motion.div>
+
+            {/* Trustpilot : pop élastique depuis scale 0 avec overshoot */}
             <motion.div
               style={{ textAlign: 'center', marginTop: 12 }}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ scale: 0, rotate: -6 }}
+              whileInView={{ scale: 1, rotate: 0 }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ duration: 0.5, delay: 0.44, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ type: 'spring', stiffness: 260, damping: 14, delay: 0.6 }}
             >
               <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(11px,0.9vw,13px)', color: 'rgba(26,45,74,0.55)', marginBottom: 6 }}>
                 Déjà rejoint ?
@@ -474,8 +481,8 @@ export function FAQSection() {
                 href="https://fr.trustpilot.com/review/maths-ultime.fr"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, transition: { type: 'spring', stiffness: 280, damping: 22 } }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ y: -3, boxShadow: '3px 6px 0 #007a52', transition: { type: 'spring', stiffness: 400, damping: 20 } }}
+                whileTap={{ y: 1, boxShadow: '1px 1px 0 #007a52', transition: { duration: 0.08 } }}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
                   padding: '10px 20px',
