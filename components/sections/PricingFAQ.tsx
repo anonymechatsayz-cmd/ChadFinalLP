@@ -3,10 +3,64 @@
 import Image from 'next/image';
 import { Play, Infinity as InfinityIcon, ShieldCheck, Lock, MessageCircle } from 'lucide-react';
 import { GreekCTA } from '@/components/ui';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useInView, useAnimate } from 'motion/react';
 import { faqItems, offerConfig } from '@/lib/offer';
 import { LogoVisuD } from '@/components/LogoVisuD';
+
+// ─── BOUTON VIDÉO GRATUITE — animation d'entrée isolée du hover ─────────────
+function FreeTrialButton() {
+  const [scope, animate] = useAnimate();
+  const inView = useInView(scope, { once: true, margin: '0px 0px -40px 0px' });
+
+  useEffect(() => {
+    if (!inView) return;
+    animate(scope.current, { opacity: 1 }, { delay: 0.3, duration: 0.4 });
+    animate(
+      scope.current,
+      { boxShadow: ['0 0 0px rgba(232,201,106,0)', '0 0 22px rgba(232,201,106,0.65)', '0 0 22px rgba(232,201,106,0.65)', '0 0 0px rgba(232,201,106,0)'] },
+      { delay: 0.5, duration: 1.3, times: [0, 0.25, 0.65, 1], ease: 'easeInOut' }
+    );
+  }, [inView]);
+
+  return (
+    <motion.a
+      ref={scope}
+      href="https://guide.maths-ultime.fr/freetrial"
+      target="_blank"
+      rel="noopener noreferrer"
+      whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 10,
+        padding: 'clamp(12px,1.2vw,16px) clamp(24px,2.5vw,40px)',
+        background: 'transparent', color: '#f5ecd4',
+        border: '2px solid rgba(232,201,106,0.5)',
+        borderRadius: 12,
+        fontFamily: 'var(--font-baloo)', fontWeight: 700,
+        fontSize: 'clamp(14px,1.2vw,18px)',
+        textDecoration: 'none', letterSpacing: '.04em',
+        cursor: 'pointer',
+        opacity: 0,
+        transition: 'background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease',
+      }}
+      onMouseEnter={e => {
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.background = 'rgba(232,201,106,0.08)';
+        el.style.borderColor = '#e8c96a';
+        el.style.boxShadow = '0 0 16px rgba(232,201,106,0.4)';
+      }}
+      onMouseLeave={e => {
+        const el = e.currentTarget as HTMLAnchorElement;
+        el.style.background = 'transparent';
+        el.style.borderColor = 'rgba(232,201,106,0.5)';
+        el.style.boxShadow = 'none';
+      }}
+    >
+      <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
+      Obtenir une vidéo gratuite
+    </motion.a>
+  );
+}
 
 // ─── COUNTDOWN shared hook ───────────────────────────────────────────────────
 function useCountdown() {
@@ -333,46 +387,7 @@ export function PricingSection() {
             Ou teste Maths Ultime gratuitement
           </motion.p>
 
-          {/* Bouton : apparition propre, hover CSS uniquement */}
-          <motion.a
-            href="https://guide.maths-ultime.fr/freetrial"
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true, margin: '0px 0px -40px 0px' }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            whileTap={{ scale: 0.97, transition: { duration: 0.08 } }}
-            className="freetrial-btn"
-            style={{
-              display: 'inline-flex', alignItems: 'center', gap: 10,
-              padding: 'clamp(12px,1.2vw,16px) clamp(24px,2.5vw,40px)',
-              background: 'transparent',
-              color: '#f5ecd4',
-              border: '2px solid rgba(232,201,106,0.5)',
-              borderRadius: 12,
-              fontFamily: 'var(--font-baloo)', fontWeight: 700,
-              fontSize: 'clamp(14px,1.2vw,18px)',
-              textDecoration: 'none', letterSpacing: '.04em',
-              cursor: 'pointer',
-              transition: 'background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease',
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = 'rgba(232,201,106,0.08)';
-              el.style.borderColor = '#e8c96a';
-              el.style.boxShadow = '0 0 16px rgba(232,201,106,0.35)';
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = 'transparent';
-              el.style.borderColor = 'rgba(232,201,106,0.5)';
-              el.style.boxShadow = 'none';
-            }}
-          >
-            <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
-            Obtenir une vidéo gratuite
-          </motion.a>
+          <FreeTrialButton />
         </div>
 
       </div>
@@ -461,13 +476,13 @@ export function FAQSection() {
               <LogoVisuD size={360} className="mb-[-56px]" />
             </motion.div>
 
-            {/* CTA : monte depuis le bas */}
+            {/* CTA : révélation par clipPath — padding compense le clip sur l'ombre */}
             <motion.div
-              style={{ width: '80%' }}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              style={{ width: '80%', padding: '8px', margin: '-8px' }}
+              initial={{ clipPath: 'inset(0 100% 0 0 round 8px)' }}
+              whileInView={{ clipPath: 'inset(0 0% 0 0 round 8px)' }}
               viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-              transition={{ type: 'spring', stiffness: 100, damping: 16, delay: 0.3 }}
+              transition={{ duration: 0.65, delay: 0.32, ease: [0.76, 0, 0.24, 1] }}
             >
               <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
             </motion.div>
