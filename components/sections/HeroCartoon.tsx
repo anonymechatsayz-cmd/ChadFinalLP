@@ -614,7 +614,7 @@ export function HeroCartoon() {
         </h1>
 
         {/* MÊME SI — slide-up depuis le bas, s'arrête net */}
-        <div className="[margin-top:-20px] sm:[margin-top:-32px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
+        <div className="[margin-top:-14px] sm:[margin-top:-25px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
           {/* placeholder invisible — stabilise la largeur sur la phrase la plus longue */}
           <span aria-hidden style={{
             visibility: 'hidden', pointerEvents: 'none',

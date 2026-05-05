@@ -55,7 +55,7 @@ function FreeTrialButton() {
       }}
     >
       <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
-      Obtenir gratuitement
+      Obtenir une vidéo gratuite
     </motion.button>
   );
 }

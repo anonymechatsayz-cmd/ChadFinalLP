@@ -227,18 +227,19 @@ body {
 /* Headline hero — 2 lignes sur mobile, 1 ligne sur desktop */
 .hero-h1-size {
   font-size: clamp(22px, 6vw, 28px);
+  margin-top: -6px;
 }
 
 /* 640–767px : 2 lignes intentionnelles */
 @media (min-width: 640px) {
   .hero-headline-top { top: clamp(12px, 2svh, 24px); }
-  .hero-h1-size { font-size: clamp(28px, 6vw, 42px); }
+  .hero-h1-size { font-size: clamp(28px, 6vw, 42px); margin-top: -6px; }
 }
 
 /* 768–1023px : 1 ligne, impact visuel correct */
 @media (min-width: 768px) {
   .hero-headline-top { top: clamp(16px, 2.5svh, 32px); }
-  .hero-h1-size { font-size: clamp(24px, 3.8vw, 44px); }
+  .hero-h1-size { font-size: clamp(24px, 3.8vw, 44px); margin-top: -6px; }
 }
 
 /* 1024px+ : font-size contrainte par l'espace disponible avant la VSL.
