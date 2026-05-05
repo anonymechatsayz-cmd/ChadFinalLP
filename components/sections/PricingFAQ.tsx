@@ -322,19 +322,31 @@ export function PricingSection() {
 
         {/* ── Bloc "OU teste gratuitement" — centré sous le grid ── */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.92 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '0px 0px -40px 0px' }}
-          transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+          transition={{ duration: 0.7, delay: 0.2, type: 'spring', stiffness: 120, damping: 18 }}
           className="relative z-10 flex flex-col items-center mt-10 md:mt-14"
         >
-          <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(13px,1.1vw,16px)', color: 'rgba(245,236,212,0.55)', marginBottom: 12, letterSpacing: '.04em' }}>
-            OU teste gratuitement ici :
-          </p>
-          <a
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(13px,1.1vw,16px)', color: 'rgba(245,236,212,0.55)', marginBottom: 12, letterSpacing: '.04em' }}
+          >
+            Ou teste Maths Ultime gratuitement
+          </motion.p>
+          <motion.a
             href="https://guide.maths-ultime.fr/freetrial"
             target="_blank"
             rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.45, type: 'spring', stiffness: 140, damping: 20 }}
+            whileHover={{ scale: 1.04, transition: { type: 'spring', stiffness: 280, damping: 22 } }}
+            whileTap={{ scale: 0.97 }}
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 10,
               padding: 'clamp(12px,1.2vw,16px) clamp(24px,2.5vw,40px)',
@@ -342,7 +354,6 @@ export function PricingSection() {
               color: '#f5ecd4',
               border: '2px solid rgba(232,201,106,0.5)',
               borderRadius: 12,
-              boxShadow: '0 0 0 0 transparent',
               fontFamily: 'var(--font-baloo)', fontWeight: 700,
               fontSize: 'clamp(14px,1.2vw,18px)',
               textDecoration: 'none', letterSpacing: '.04em',
@@ -353,8 +364,8 @@ export function PricingSection() {
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(232,201,106,0.5)'; (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
           >
             <Play className="w-4 h-4" style={{ color: '#e8c96a', flexShrink: 0 }} />
-            Obtenir un échantillon gratuit
-          </a>
+            Obtenir une vidéo gratuite
+          </motion.a>
         </motion.div>
 
       </div>
@@ -431,26 +442,40 @@ export function FAQSection() {
           </div>
 
           {/* Colonne 3 — Logo + CTA (tiers droit, ~34% restant, contenu centré) */}
-          <motion.div
-            className="hidden lg:flex flex-col items-center justify-center shrink-0"
-            style={{ flex: 1, gap: 6 }}
-            initial={{ opacity: 0, x: 30, scale: 0.94 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-            transition={{ duration: 0.6, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <LogoVisuD size={360} className="mb-[-56px]" />
-            <div style={{ width: '80%' }}>
+          <div className="hidden lg:flex flex-col items-center justify-center shrink-0" style={{ flex: 1, gap: 6 }}>
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.92 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+              transition={{ duration: 0.65, delay: 0.1, type: 'spring', stiffness: 100, damping: 18 }}
+            >
+              <LogoVisuD size={360} className="mb-[-56px]" />
+            </motion.div>
+            <motion.div
+              style={{ width: '80%' }}
+              initial={{ opacity: 0, scale: 0.88 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+              transition={{ duration: 0.55, delay: 0.28, type: 'spring', stiffness: 130, damping: 18 }}
+            >
               <GreekCTA size="sm" goldBorder={false} showBadges={false} label="JE VEUX 15/20 EN MATHS" className="w-full" />
-            </div>
-            <div style={{ textAlign: 'center', marginTop: 12 }}>
+            </motion.div>
+            <motion.div
+              style={{ textAlign: 'center', marginTop: 12 }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '0px 0px -60px 0px' }}
+              transition={{ duration: 0.5, delay: 0.44, ease: [0.22, 1, 0.36, 1] }}
+            >
               <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 'clamp(11px,0.9vw,13px)', color: 'rgba(26,45,74,0.55)', marginBottom: 6 }}>
                 Déjà rejoint ?
               </p>
-              <a
+              <motion.a
                 href="https://fr.trustpilot.com/review/maths-ultime.fr"
                 target="_blank"
                 rel="noopener noreferrer"
+                whileHover={{ scale: 1.05, transition: { type: 'spring', stiffness: 280, damping: 22 } }}
+                whileTap={{ scale: 0.97 }}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
                   padding: '10px 20px',
@@ -466,9 +491,9 @@ export function FAQSection() {
               >
                 <span style={{ fontSize: 16 }}>★</span>
                 Partage ton expérience !
-              </a>
-            </div>
-          </motion.div>
+              </motion.a>
+            </motion.div>
+          </div>
 
         </div>
 
