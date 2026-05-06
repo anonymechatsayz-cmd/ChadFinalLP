@@ -533,10 +533,11 @@ export function FAQSection() {
             <p style={{ fontFamily: 'var(--font-baloo)', fontWeight: 600, fontSize: 13, color: 'rgba(26,45,74,0.55)', marginBottom: 6 }}>
               Déjà rejoint ?
             </p>
-            <a
+            <motion.a
               href="https://fr.trustpilot.com/review/maths-ultime.fr"
               target="_blank"
               rel="noopener noreferrer"
+              whileTap={{ y: 2, boxShadow: '1px 1px 0 #007a52', transition: { duration: 0.08 } }}
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 8,
                 padding: '10px 20px',
@@ -552,7 +553,7 @@ export function FAQSection() {
             >
               <span style={{ fontSize: 16 }}>★</span>
               Partage ton expérience !
-            </a>
+            </motion.a>
           </div>
         </div>
 

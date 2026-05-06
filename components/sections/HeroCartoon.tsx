@@ -723,11 +723,17 @@ export function HeroCartoon() {
         initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.4, duration:0.55, type:'spring' }}
         className="sm:hidden absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-5"
         style={{ top: 'calc(73svh + 16px)' }}>
-        <CountdownBadge />
         <div className="w-full flex justify-center pointer-events-auto">
           <div className="flex flex-col items-center w-full">
-            <GreekCTA size="md" goldBorder={false} showBadges={false} label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content" />
-            <div className="hidden min-[375px]:flex items-center gap-2 flex-nowrap justify-center mt-3">
+            <CountdownBadge hovered={ctaHovered} />
+            <GreekCTA
+              size="md" goldBorder={false} showBadges={false}
+              label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content"
+              groupHovered={ctaHovered}
+              onGroupHoverStart={() => setCtaHovered(true)}
+              onGroupHoverEnd={() => setCtaHovered(false)}
+            />
+            <div className="hidden min-[375px]:flex items-center gap-2 flex-nowrap justify-center mt-2">
               {['Méthode visuelle', 'Garantie remboursé', 'Accès à vie'].map((label, i) => (
                 <div key={i} className="flex items-center gap-1 rounded-lg px-2.5 py-1.5"
                   style={{ background: 'rgba(255,255,255,0.97)', border: '1.5px solid rgba(26,26,26,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.18)' }}>
