@@ -32,8 +32,18 @@ export function LeadPopup() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (isOpen) {
+      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   }, [isOpen]);
 
   useEffect(() => () => {
@@ -106,8 +116,9 @@ export function LeadPopup() {
           transition={{ duration: 0.2 }}
           style={{
             position: 'fixed', inset: 0, zIndex: 200,
-            background: 'rgba(7,18,41,0.82)',
-            backdropFilter: 'blur(6px)',
+            background: 'rgba(7,18,41,0.45)',
+            backdropFilter: 'blur(2px) saturate(1.4)',
+            WebkitBackdropFilter: 'blur(2px) saturate(1.4)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             padding: '16px',
           }}
