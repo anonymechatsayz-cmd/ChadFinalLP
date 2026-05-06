@@ -353,7 +353,9 @@ export function HeroCartoon() {
       // et la VSL bougent quand la barre du navigateur mobile apparaît/disparaît.
       if (initialH === -1) {
         initialH = window.innerHeight;
-        setHeroHeight(initialH);
+        // Sur mobile (< 640px), réduire la hauteur hero pour supprimer l'espace vide sous le CTA
+        const isMobile = vw < 640;
+        setHeroHeight(isMobile ? Math.round(initialH * 0.88) : initialH);
       }
       const svh = initialH;
       const vpRatio = vw / svh;
@@ -392,7 +394,8 @@ export function HeroCartoon() {
       lastVw = vw;
       // Vrai resize (rotation ou fenêtre desktop) → recapturer la hauteur
       initialH = window.innerHeight;
-      setHeroHeight(initialH);
+      const isMobile = vw < 640;
+      setHeroHeight(isMobile ? Math.round(initialH * 0.88) : initialH);
       compute(vw);
     };
 
@@ -614,7 +617,7 @@ export function HeroCartoon() {
         </h1>
 
         {/* MÊME SI — slide-up depuis le bas, s'arrête net */}
-        <div className="[margin-top:-14px] sm:[margin-top:-25px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
+        <div className="[margin-top:-4px] sm:[margin-top:-25px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
           {/* placeholder invisible — stabilise la largeur sur la phrase la plus longue */}
           <span aria-hidden style={{
             visibility: 'hidden', pointerEvents: 'none',
@@ -722,7 +725,7 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.4, duration:0.55, type:'spring' }}
         className="sm:hidden absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-5"
-        style={{ top: 'calc(73svh + 16px)' }}>
+        style={{ top: 'calc(71svh + 16px)' }}>
         <div className="w-full flex justify-center pointer-events-auto">
           <div className="flex flex-col items-center w-full">
             <CountdownBadge hovered={ctaHovered} />
