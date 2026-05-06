@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
               </td></tr>
             </table>
             <p style="margin:0 0 16px;font-size:15px;color:#444;line-height:1.7">
-              Dans cette vidéo tu découvriras la méthode ChadSciences&nbsp;: comprendre le cours
+              Dans cette vidéo tu découvriras la méthode MATHS ULTIME&nbsp;: comprendre le cours
               <em>avant</em> de l'apprendre, pour que tout devienne logique et que tu retiennes tout.
             </p>
             <p style="margin:0;font-size:15px;color:#444;line-height:1.7">Bonne révision&nbsp;! 💪</p>

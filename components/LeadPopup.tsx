@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle, Play } from 'lucide-react';
+import { X, CheckCircle, Play, ChevronDown } from 'lucide-react';
 
 const STORAGE_KEY = 'mu_guide_submitted';
 const API_ENDPOINT = '/api/send-mail';
@@ -11,22 +11,51 @@ type Status = 'idle' | 'loading' | 'success' | 'error';
 
 const CLASSES = ['2nde', '1ère', 'Terminale', 'BTS / CPGE', 'Autre'];
 
+const COUNTRIES = [
+  { code: 'FR', flag: '🇫🇷', name: 'France',       dial: '+33' },
+  { code: 'BE', flag: '🇧🇪', name: 'Belgique',      dial: '+32' },
+  { code: 'CH', flag: '🇨🇭', name: 'Suisse',        dial: '+41' },
+  { code: 'LU', flag: '🇱🇺', name: 'Luxembourg',    dial: '+352' },
+  { code: 'MA', flag: '🇲🇦', name: 'Maroc',         dial: '+212' },
+  { code: 'DZ', flag: '🇩🇿', name: 'Algérie',       dial: '+213' },
+  { code: 'TN', flag: '🇹🇳', name: 'Tunisie',       dial: '+216' },
+  { code: 'SN', flag: '🇸🇳', name: 'Sénégal',       dial: '+221' },
+  { code: 'CI', flag: '🇨🇮', name: "Côte d'Ivoire", dial: '+225' },
+  { code: 'CA', flag: '🇨🇦', name: 'Canada',        dial: '+1'   },
+  { code: 'US', flag: '🇺🇸', name: 'États-Unis',    dial: '+1'   },
+  { code: 'GB', flag: '🇬🇧', name: 'Royaume-Uni',   dial: '+44'  },
+  { code: 'DE', flag: '🇩🇪', name: 'Allemagne',     dial: '+49'  },
+  { code: 'ES', flag: '🇪🇸', name: 'Espagne',       dial: '+34'  },
+  { code: 'IT', flag: '🇮🇹', name: 'Italie',        dial: '+39'  },
+  { code: 'PT', flag: '🇵🇹', name: 'Portugal',      dial: '+351' },
+];
+
+function formatPhoneNumber(value: string, dialCode: string): string {
+  const digits = value.replace(/\D/g, '');
+  if (dialCode === '+33' || dialCode === '+32' || dialCode === '+41') {
+    const groups = digits.match(/.{1,2}/g) ?? [];
+    return groups.join(' ');
+  }
+  const groups = digits.match(/.{1,3}/g) ?? [];
+  return groups.join(' ');
+}
+
 export function LeadPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [nom, setNom] = useState('');
   const [prenom, setPrenom] = useState('');
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
+  const [country, setCountry] = useState(COUNTRIES[0]);
+  const [countryOpen, setCountryOpen] = useState(false);
   const [classe, setClasse] = useState('');
   const [status, setStatus] = useState<Status>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countryRef = useRef<HTMLDivElement>(null);
 
-  // Déclenché uniquement via l'événement custom (bouton "Obtenir gratuitement")
   useEffect(() => {
-    const handler = () => {
-      if (localStorage.getItem(STORAGE_KEY) !== 'true') setIsOpen(true);
-    };
+    const handler = () => setIsOpen(true);
     window.addEventListener('mu:open-popup', handler);
     return () => window.removeEventListener('mu:open-popup', handler);
   }, []);
@@ -46,14 +75,34 @@ export function LeadPopup() {
     };
   }, [isOpen]);
 
+  // Ferme le dropdown pays si clic extérieur
+  useEffect(() => {
+    if (!countryOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (countryRef.current && !countryRef.current.contains(e.target as Node)) {
+        setCountryOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [countryOpen]);
+
   useEffect(() => () => {
     if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
   }, []);
 
-  function handleClose() { setIsOpen(false); }
+  function handleClose() {
+    setIsOpen(false);
+    setCountryOpen(false);
+  }
 
   function handleBackdropClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) handleClose();
+  }
+
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const formatted = formatPhoneNumber(e.target.value, country.dial);
+    setTelephone(formatted);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,11 +120,16 @@ export function LeadPopup() {
     setStatus('loading');
     setErrorMessage('');
 
+    const fullPhone = telephone.trim() ? `${country.dial} ${telephone.trim()}` : '';
+
     try {
       const res = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nom: trimmedNom, prenom: trimmedPrenom, email: trimmedEmail, telephone: telephone.trim(), classe }),
+        body: JSON.stringify({
+          nom: trimmedNom, prenom: trimmedPrenom, email: trimmedEmail,
+          telephone: fullPhone, classe,
+        }),
       });
 
       const data = await res.json().catch(() => ({})) as { success?: boolean; message?: string };
@@ -102,6 +156,17 @@ export function LeadPopup() {
     color: '#1A1A1A',
     outline: 'none',
     transition: 'border-color 0.15s, box-shadow 0.15s',
+  };
+
+  const focusHandlers = {
+    onFocus: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = '#EC6426';
+      e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)';
+    },
+    onBlur: (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+      e.target.style.borderColor = 'rgba(212,168,83,0.35)';
+      e.target.style.boxShadow = 'none';
+    },
   };
 
   return (
@@ -198,10 +263,8 @@ export function LeadPopup() {
                     <h2 style={{
                       fontFamily: 'var(--font-cinzel)',
                       fontSize: 'clamp(16px,3.5vw,20px)',
-                      fontWeight: 700,
-                      color: '#2a1e12',
-                      margin: '0 0 6px',
-                      lineHeight: 1.25,
+                      fontWeight: 700, color: '#2a1e12',
+                      margin: '0 0 6px', lineHeight: 1.25,
                     }}>
                       Reçois la 1ère vidéo du guide<br />Maths Ultime gratuitement
                     </h2>
@@ -217,59 +280,122 @@ export function LeadPopup() {
                     {/* Nom + Prénom */}
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <input
-                        type="text"
-                        placeholder="Nom"
-                        value={nom}
-                        onChange={e => setNom(e.target.value)}
+                        type="text" placeholder="Nom"
+                        value={nom} onChange={e => setNom(e.target.value)}
                         disabled={status === 'loading'}
                         autoComplete="family-name"
-                        style={inputStyle}
-                        onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
-                        onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
+                        style={inputStyle} {...focusHandlers}
                       />
                       <input
-                        type="text"
-                        placeholder="Prénom"
-                        value={prenom}
-                        onChange={e => setPrenom(e.target.value)}
+                        type="text" placeholder="Prénom"
+                        value={prenom} onChange={e => setPrenom(e.target.value)}
                         disabled={status === 'loading'}
                         autoComplete="given-name"
-                        style={inputStyle}
-                        onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
-                        onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
+                        style={inputStyle} {...focusHandlers}
                       />
                     </div>
 
                     {/* Email */}
                     <input
-                      type="email"
-                      placeholder="Email"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
+                      type="email" placeholder="Email"
+                      value={email} onChange={e => setEmail(e.target.value)}
                       disabled={status === 'loading'}
                       autoComplete="email"
-                      style={inputStyle}
-                      onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
+                      style={inputStyle} {...focusHandlers}
                     />
 
-                    {/* Téléphone */}
-                    <input
-                      type="tel"
-                      placeholder="06 12 34 56 78 (facultatif)"
-                      value={telephone}
-                      onChange={e => setTelephone(e.target.value)}
-                      disabled={status === 'loading'}
-                      autoComplete="tel"
-                      style={inputStyle}
-                      onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
-                    />
+                    {/* Téléphone avec sélecteur pays */}
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      {/* Sélecteur pays */}
+                      <div ref={countryRef} style={{ position: 'relative', flexShrink: 0 }}>
+                        <button
+                          type="button"
+                          onClick={() => setCountryOpen(o => !o)}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 4,
+                            height: '100%',
+                            padding: '10px 10px',
+                            border: '2px solid rgba(212,168,83,0.35)',
+                            borderRadius: 10,
+                            background: 'rgba(253,251,247,0.6)',
+                            cursor: 'pointer',
+                            fontFamily: 'var(--font-baloo)',
+                            fontSize: 14,
+                            color: '#1A1A1A',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          <span style={{ fontSize: 18, lineHeight: 1 }}>{country.flag}</span>
+                          <span style={{ fontSize: 13, fontWeight: 600 }}>{country.dial}</span>
+                          <ChevronDown size={12} strokeWidth={2.5} style={{ color: '#8a7968', transition: 'transform 0.15s', transform: countryOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                        </button>
+
+                        <AnimatePresence>
+                          {countryOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                              transition={{ duration: 0.15 }}
+                              style={{
+                                position: 'absolute', top: 'calc(100% + 4px)', left: 0,
+                                zIndex: 300,
+                                background: '#ede5da',
+                                border: '2px solid #d4a017',
+                                borderRadius: 10,
+                                boxShadow: '4px 4px 0 rgba(42,30,18,0.2)',
+                                maxHeight: 220,
+                                overflowY: 'auto',
+                                minWidth: 200,
+                              }}
+                            >
+                              {COUNTRIES.map(c => (
+                                <button
+                                  key={c.code}
+                                  type="button"
+                                  onClick={() => {
+                                    setCountry(c);
+                                    setCountryOpen(false);
+                                    setTelephone('');
+                                  }}
+                                  style={{
+                                    display: 'flex', alignItems: 'center', gap: 10,
+                                    width: '100%', padding: '8px 12px',
+                                    background: c.code === country.code ? 'rgba(236,100,38,0.1)' : 'transparent',
+                                    border: 'none', cursor: 'pointer',
+                                    fontFamily: 'var(--font-baloo)', fontSize: 13, color: '#2a1e12',
+                                    textAlign: 'left',
+                                  }}
+                                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212,168,83,0.2)'; }}
+                                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = c.code === country.code ? 'rgba(236,100,38,0.1)' : 'transparent'; }}
+                                >
+                                  <span style={{ fontSize: 18 }}>{c.flag}</span>
+                                  <span style={{ flex: 1 }}>{c.name}</span>
+                                  <span style={{ color: '#8a7968', fontWeight: 600 }}>{c.dial}</span>
+                                </button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+
+                      {/* Input téléphone */}
+                      <input
+                        type="tel"
+                        placeholder="07 59 48 30 24"
+                        value={telephone}
+                        onChange={handlePhoneChange}
+                        disabled={status === 'loading'}
+                        autoComplete="tel-national"
+                        style={{ ...inputStyle, flex: 1 }}
+                        onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
+                        onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
+                      />
+                    </div>
 
                     {/* Classe */}
                     <select
-                      value={classe}
-                      onChange={e => setClasse(e.target.value)}
+                      value={classe} onChange={e => setClasse(e.target.value)}
                       disabled={status === 'loading'}
                       style={{
                         ...inputStyle,
@@ -280,8 +406,7 @@ export function LeadPopup() {
                         backgroundPosition: 'right 12px center',
                         paddingRight: 36,
                       }}
-                      onFocus={e => { e.target.style.borderColor = '#EC6426'; e.target.style.boxShadow = '0 0 0 3px rgba(236,100,38,0.15)'; }}
-                      onBlur={e => { e.target.style.borderColor = 'rgba(212,168,83,0.35)'; e.target.style.boxShadow = 'none'; }}
+                      {...focusHandlers}
                     >
                       <option value="" disabled>Ta classe l'an prochain</option>
                       {CLASSES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -294,26 +419,20 @@ export function LeadPopup() {
                       </p>
                     )}
 
-                    {/* Bouton submit */}
+                    {/* Submit */}
                     <motion.button
                       type="submit"
                       disabled={status === 'loading'}
                       whileHover={status !== 'loading' ? { y: 2, boxShadow: '4px 4px 0 rgba(42,30,18,0.5)' } : {}}
                       whileTap={status !== 'loading' ? { y: 4, boxShadow: '2px 2px 0 rgba(42,30,18,0.5)' } : {}}
                       style={{
-                        width: '100%',
-                        padding: '13px 20px',
+                        width: '100%', padding: '13px 20px',
                         background: status === 'loading' ? '#b5a898' : 'linear-gradient(165deg,#FF8040 0%,#EC6426 45%,#E04A10 100%)',
-                        border: '3px solid #2a1e12',
-                        borderRadius: 12,
+                        border: '3px solid #2a1e12', borderRadius: 12,
                         boxShadow: '6px 6px 0 rgba(42,30,18,0.45)',
                         cursor: status === 'loading' ? 'not-allowed' : 'pointer',
-                        fontFamily: 'var(--font-baloo)',
-                        fontSize: 15,
-                        fontWeight: 900,
-                        color: '#fff',
-                        textTransform: 'uppercase',
-                        letterSpacing: '.05em',
+                        fontFamily: 'var(--font-baloo)', fontSize: 15, fontWeight: 900,
+                        color: '#fff', textTransform: 'uppercase', letterSpacing: '.05em',
                         marginTop: 2,
                       }}
                     >
@@ -326,13 +445,10 @@ export function LeadPopup() {
                           />
                           Envoi en cours…
                         </span>
-                      ) : (
-                        '🎬 Recevoir la vidéo gratuite'
-                      )}
+                      ) : '🎬 Recevoir la vidéo gratuite'}
                     </motion.button>
                   </form>
 
-                  {/* Legal */}
                   <p style={{ fontFamily: 'var(--font-baloo)', fontSize: 10, color: 'rgba(42,30,18,0.45)', textAlign: 'center', margin: '10px 0 0', lineHeight: 1.5 }}>
                     Vos données sont traitées pour vous envoyer la vidéo.{' '}
                     <a href="/mentions-legales" style={{ color: 'rgba(42,30,18,0.6)', textDecoration: 'underline' }}>Confidentialité</a>
