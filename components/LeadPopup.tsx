@@ -12,23 +12,35 @@ type Status = 'idle' | 'loading' | 'success' | 'error';
 const CLASSES = ['2nde', '1ère', 'Terminale', 'BTS / CPGE', 'Autre'];
 
 const COUNTRIES = [
-  { code: 'FR', flag: '🇫🇷', name: 'France',       dial: '+33' },
-  { code: 'BE', flag: '🇧🇪', name: 'Belgique',      dial: '+32' },
-  { code: 'CH', flag: '🇨🇭', name: 'Suisse',        dial: '+41' },
-  { code: 'LU', flag: '🇱🇺', name: 'Luxembourg',    dial: '+352' },
-  { code: 'MA', flag: '🇲🇦', name: 'Maroc',         dial: '+212' },
-  { code: 'DZ', flag: '🇩🇿', name: 'Algérie',       dial: '+213' },
-  { code: 'TN', flag: '🇹🇳', name: 'Tunisie',       dial: '+216' },
-  { code: 'SN', flag: '🇸🇳', name: 'Sénégal',       dial: '+221' },
-  { code: 'CI', flag: '🇨🇮', name: "Côte d'Ivoire", dial: '+225' },
-  { code: 'CA', flag: '🇨🇦', name: 'Canada',        dial: '+1'   },
-  { code: 'US', flag: '🇺🇸', name: 'États-Unis',    dial: '+1'   },
-  { code: 'GB', flag: '🇬🇧', name: 'Royaume-Uni',   dial: '+44'  },
-  { code: 'DE', flag: '🇩🇪', name: 'Allemagne',     dial: '+49'  },
-  { code: 'ES', flag: '🇪🇸', name: 'Espagne',       dial: '+34'  },
-  { code: 'IT', flag: '🇮🇹', name: 'Italie',        dial: '+39'  },
-  { code: 'PT', flag: '🇵🇹', name: 'Portugal',      dial: '+351' },
+  { code: 'fr', name: 'France',       dial: '+33' },
+  { code: 'be', name: 'Belgique',      dial: '+32' },
+  { code: 'ch', name: 'Suisse',        dial: '+41' },
+  { code: 'lu', name: 'Luxembourg',    dial: '+352' },
+  { code: 'ma', name: 'Maroc',         dial: '+212' },
+  { code: 'dz', name: 'Algérie',       dial: '+213' },
+  { code: 'tn', name: 'Tunisie',       dial: '+216' },
+  { code: 'sn', name: 'Sénégal',       dial: '+221' },
+  { code: 'ci', name: "Côte d'Ivoire", dial: '+225' },
+  { code: 'ca', name: 'Canada',        dial: '+1'   },
+  { code: 'us', name: 'États-Unis',    dial: '+1'   },
+  { code: 'gb', name: 'Royaume-Uni',   dial: '+44'  },
+  { code: 'de', name: 'Allemagne',     dial: '+49'  },
+  { code: 'es', name: 'Espagne',       dial: '+34'  },
+  { code: 'it', name: 'Italie',        dial: '+39'  },
+  { code: 'pt', name: 'Portugal',      dial: '+351' },
 ];
+
+function FlagImg({ code, size = 20 }: { code: string; size?: number }) {
+  return (
+    <img
+      src={`https://flagcdn.com/w40/${code}.png`}
+      alt={code.toUpperCase()}
+      width={size}
+      height={size}
+      style={{ objectFit: 'cover', borderRadius: 2, display: 'inline-block', flexShrink: 0 }}
+    />
+  );
+}
 
 function formatPhoneNumber(value: string, dialCode: string): string {
   const digits = value.replace(/\D/g, '');
@@ -325,7 +337,7 @@ export function LeadPopup() {
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          <span style={{ fontSize: 18, lineHeight: 1 }}>{country.flag}</span>
+                          <FlagImg code={country.code} size={20} />
                           <span style={{ fontSize: 13, fontWeight: 600 }}>{country.dial}</span>
                           <ChevronDown size={12} strokeWidth={2.5} style={{ color: '#8a7968', transition: 'transform 0.15s', transform: countryOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                         </button>
@@ -369,7 +381,7 @@ export function LeadPopup() {
                                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212,168,83,0.2)'; }}
                                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = c.code === country.code ? 'rgba(236,100,38,0.1)' : 'transparent'; }}
                                 >
-                                  <span style={{ fontSize: 18 }}>{c.flag}</span>
+                                  <FlagImg code={c.code} size={18} />
                                   <span style={{ flex: 1 }}>{c.name}</span>
                                   <span style={{ color: '#8a7968', fontWeight: 600 }}>{c.dial}</span>
                                 </button>
