@@ -353,9 +353,7 @@ export function HeroCartoon() {
       // et la VSL bougent quand la barre du navigateur mobile apparaît/disparaît.
       if (initialH === -1) {
         initialH = window.innerHeight;
-        // Sur mobile (< 640px), réduire la hauteur hero pour supprimer l'espace vide sous le CTA
-        const isMobile = vw < 640;
-        setHeroHeight(isMobile ? Math.round(initialH * 0.88) : initialH);
+        setHeroHeight(initialH);
       }
       const svh = initialH;
       const vpRatio = vw / svh;
@@ -394,8 +392,7 @@ export function HeroCartoon() {
       lastVw = vw;
       // Vrai resize (rotation ou fenêtre desktop) → recapturer la hauteur
       initialH = window.innerHeight;
-      const isMobile = vw < 640;
-      setHeroHeight(isMobile ? Math.round(initialH * 0.88) : initialH);
+      setHeroHeight(initialH);
       compute(vw);
     };
 
@@ -617,7 +614,7 @@ export function HeroCartoon() {
         </h1>
 
         {/* MÊME SI — slide-up depuis le bas, s'arrête net */}
-        <div className="[margin-top:-4px] sm:[margin-top:-25px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
+        <div className="[margin-top:-8px] sm:[margin-top:-25px]" style={{ position: 'relative', overflow: 'hidden', height: 'clamp(32px, 3.5vw, 44px)' }}>
           {/* placeholder invisible — stabilise la largeur sur la phrase la plus longue */}
           <span aria-hidden style={{
             visibility: 'hidden', pointerEvents: 'none',
@@ -677,16 +674,20 @@ export function HeroCartoon() {
               initial={{ opacity:0, y:12 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.55, duration:0.5 }}
               className="flex flex-col items-center w-full max-w-[min(100%,480px)] px-2"
             >
-              <div className="flex flex-col items-center w-full">
+              <motion.div
+                className="flex flex-col items-center w-full"
+                animate={{ y: ctaHovered ? 2 : 0 }}
+                transition={{ duration: 0.06 }}
+                onHoverStart={() => setCtaHovered(true)}
+                onHoverEnd={() => setCtaHovered(false)}
+              >
                 <CountdownBadge hovered={ctaHovered} />
                 <GreekCTA
                   size="md" goldBorder={false} showBadges={false}
                   label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content"
                   groupHovered={ctaHovered}
-                  onGroupHoverStart={() => setCtaHovered(true)}
-                  onGroupHoverEnd={() => setCtaHovered(false)}
                 />
-              </div>
+              </motion.div>
               <div className="flex items-center gap-3 flex-wrap justify-center mt-3">
                 {['Méthode visuelle', 'Garantie satisfait ou remboursé', 'Accès à vie'].map((label, i) => (
                   <div key={i} className="flex items-center gap-1.5 rounded-lg px-3 py-1.5"
@@ -725,17 +726,23 @@ export function HeroCartoon() {
       <motion.div
         initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.4, duration:0.55, type:'spring' }}
         className="sm:hidden absolute z-20 left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none w-full px-5"
-        style={{ top: 'calc(71svh + 16px)' }}>
+        style={{ top: 'calc(73svh + 16px)' }}>
         <div className="w-full flex justify-center pointer-events-auto">
           <div className="flex flex-col items-center w-full">
-            <CountdownBadge hovered={ctaHovered} />
-            <GreekCTA
-              size="md" goldBorder={false} showBadges={false}
-              label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content"
-              groupHovered={ctaHovered}
-              onGroupHoverStart={() => setCtaHovered(true)}
-              onGroupHoverEnd={() => setCtaHovered(false)}
-            />
+            <motion.div
+              className="flex flex-col items-center w-full"
+              whileTap={{ y: 2 }}
+              transition={{ duration: 0.06 }}
+            >
+              <CountdownBadge hovered={ctaHovered} />
+              <GreekCTA
+                size="md" goldBorder={false} showBadges={false}
+                label="DÉCOUVRIR LE GUIDE" scrollTo="guide-content"
+                groupHovered={ctaHovered}
+                onGroupHoverStart={() => setCtaHovered(true)}
+                onGroupHoverEnd={() => setCtaHovered(false)}
+              />
+            </motion.div>
             <div className="hidden min-[375px]:flex items-center gap-2 flex-nowrap justify-center mt-2">
               {['Méthode visuelle', 'Garantie remboursé', 'Accès à vie'].map((label, i) => (
                 <div key={i} className="flex items-center gap-1 rounded-lg px-2.5 py-1.5"
@@ -748,7 +755,7 @@ export function HeroCartoon() {
         </div>
       </motion.div>
 
-      <div className="absolute bottom-0 left-0 right-0 z-[25] h-[4%] pointer-events-none" style={{ background:'linear-gradient(to top,#FDFBF7,transparent)' }} />
+      <div className="absolute bottom-0 left-0 right-0 z-[15] h-[4%] pointer-events-none" style={{ background:'linear-gradient(to top,#FDFBF7,transparent)' }} />
 
       {/* ZEUS (Droite) */}
       <motion.div
